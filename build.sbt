@@ -2,7 +2,7 @@ name := "dpoibattleship"
 
 version := "1.0"
 
-lazy val `dpoibattleship` = (project in file(".")).enablePlugins(PlayScala)
+lazy val `dpoibattleship` = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
 scalaVersion := "2.11.7"
 

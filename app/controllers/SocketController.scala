@@ -18,6 +18,8 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   implicit val inEventFormat = Json.format[InEvent]
   implicit val outEventFormat = Json.format[OutEvent]
 
+  implicit val fireAction = Json.format[Fire]
+
   implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
 
   class MyWebSocketActor(out: ActorRef) extends Actor {

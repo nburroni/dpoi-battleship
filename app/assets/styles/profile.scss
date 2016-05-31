@@ -1,0 +1,36 @@
+.battleship-bg{
+  background-image: url(../images/battleship.jpg);
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-size: cover;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  height: 100%;
+  opacity: 0.5;
+}
+
+.navbar{
+  background: #697159;
+}
+.nav-link, .navbar-brand{
+  color: white !important;
+}
+
+.container{
+  margin-top: 2vh;
+}
+
+.btn-primary{
+  background: #697159;
+  border-color: #697159;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active{
+  background: #545a47;
+  border-color: #545a47;
+}
+.btn-primary:active:focus{
+  background: #434838;
+  border-color: #434838;
+}

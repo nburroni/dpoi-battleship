@@ -9,6 +9,8 @@ GET     /socket/try                 controllers.Application.socket
 GET     /socket/url                 controllers.Controller4.socketUrl
 GET     /socket/connect             controllers.Controller4.socket
 
+GET     /profile                    controllers.Users.profileView
+
 # Action triggered after fb login
 POST    /fb-login                   controllers.Users.logUser
 

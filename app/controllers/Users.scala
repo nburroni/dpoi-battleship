@@ -38,4 +38,8 @@ class Users extends Controller {
       }
     }
   }
+
+  def profileView() = Action {
+    Ok(views.html.profile())
+  }
 }

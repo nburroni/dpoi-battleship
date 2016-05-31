@@ -1,6 +1,60 @@
 @main { @Html("") } {
     <div class="game" ng-controller="GameController">
-
+        <div class="card card-block" ng-hide="startGame">
+            <div class="card-title">Searching for other player</div>
+            <div class="card-text">
+                <i class="fa fa-spinner fa-spin fa-5x"></i>
+            </div>
+        </div>
+        <div ng-show="startGame">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>10</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>10</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr ng-repeat="letter in letters track by $index">
+                        <th>{{letter}}</th>
+                        <td id="{{letter + $index}}">O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                        <td>O</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 } {
     <script src="@routes.Assets.at("scripts/socketUtil.js")"></script>

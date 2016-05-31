@@ -28,13 +28,13 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
           Global getFirstPendingPlayer match {
             case  Some(v) =>
               v ! InEvent("match-player")
-              out ! OutEvent("Matched Player")
+              out ! OutEvent("matched-player")
             case None =>
               Global addPlayer self
-              out ! OutEvent("Searching game...")
+              out ! OutEvent("searching-game")
           }
         case MatchPlayer =>
-          out ! OutEvent("Matched Player")
+          out ! OutEvent("matched-player")
       }
     }
   }

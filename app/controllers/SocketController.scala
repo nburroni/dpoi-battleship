@@ -18,6 +18,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   implicit val inEventFormat = Json.format[InEvent]
   implicit val outEventFormat = Json.format[OutEvent]
 
+  implicit val fireOption = Json.format[Option[Fire]]
   implicit val fireAction = Json.format[Fire]
 
   implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]

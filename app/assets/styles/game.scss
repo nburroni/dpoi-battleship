@@ -1,5 +1,17 @@
 .game {
-
-
-
+  #shooting-board{
+    td:hover{
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+  }
+  .selected-target{
+    color: orange;
+  }
+  .hit-target{
+    color: darkgreen;
+  }
+  .miss-target{
+    color: #0006d0;
+  }
 }

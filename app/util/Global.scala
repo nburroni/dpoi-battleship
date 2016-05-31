@@ -4,7 +4,9 @@ package util
   * Created by nico on 28/05/16.
   */
 
+import akka.actor.Actor.Receive
 import akka.actor.{ActorRef, Actor}
+import controllers.Messages.InEvent
 import play.api._
 
 import scala.collection.immutable.Queue
@@ -27,3 +29,11 @@ object Global extends GlobalSettings {
     }
   }
 }
+
+//class GameActor(out: ActorRef) extends Actor {
+//  override def receive: Receive = {
+//    case e: InEvent => e toMessage match {
+//
+//    }
+//  }
+//}

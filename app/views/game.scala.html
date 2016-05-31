@@ -7,7 +7,8 @@
             </div>
         </div>
         <div ng-show="startGame">
-            <table class="table table-bordered table-hover">
+            <h1>Click on a cell to select the position and the click FIRE!!!</h1>
+            <table class="table table-bordered" id="shooting-board">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -39,18 +40,49 @@
                     </tr>
                 </tfoot>
                 <tbody>
-                    <tr ng-repeat="letter in letters track by $index">
+                    <tr ng-repeat="letter in letters">
                         <th>{{letter}}</th>
-                        <td id="{{letter + $index}}">O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
-                        <td>O</td>
+                        <td ng-repeat="number in numbers" id="{{'opp-' + $parent.$index + '' + number}}" ng-click="selectPosition(number, $parent.$index)"><i class="fa fa-circle"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
+            <h1>These are your ships</h1>
+            <table class="table table-bordered" id="my-board">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>10</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>10</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr ng-repeat="letter in letters">
+                        <th>{{letter}}</th>
+                        <td ng-repeat="number in numbers" id="{{'my-' + $parent.$index + '' + number}}"><i class="fa fa-circle"></i></td>
                     </tr>
                 </tbody>
             </table>

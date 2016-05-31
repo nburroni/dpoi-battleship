@@ -12,7 +12,9 @@ window.socketUtil =
     socketInfo.socket.onopen = callback if socketInfo.socket?
 
   onmessage: (callback) ->
-    socketInfo.onmessage = callback
-    socketInfo.socket.onmessage = callback if socketInfo.socket?
+    callbackWrapper = (message) -> callback(JSON.parse(message.data))
+    socketInfo.onmessage = callbackWrapper
+    if socketInfo.socket?
+      socketInfo.socket.onmessage = callbackWrapper
 
   send: (data) -> socketInfo.socket.send JSON.stringify(data)

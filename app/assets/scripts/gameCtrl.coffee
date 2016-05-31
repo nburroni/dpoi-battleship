@@ -7,7 +7,7 @@ angular.module 'app'
       socket.onmessage (data) -> console.log(data)
       socket.connect()
       socket.onopen ->
-        socket.send { action: "search-game", msg: "Hi socket!" }
+        socket.send { action: "search-game" }
 
 
 ]

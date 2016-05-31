@@ -12,6 +12,8 @@ import play.api.libs.streams._
 
 class SocketController @Inject()(implicit system: ActorSystem, materializer: Materializer) extends Controller{
 
+  import Messages._
+
   implicit val inEventFormat = Json.format[InEvent]
   implicit val outEventFormat = Json.format[OutEvent]
 
@@ -19,7 +21,11 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
   class MyWebSocketActor(out: ActorRef) extends Actor {
     def receive = {
-      case InEvent(action, msg) => out ! OutEvent(msg)
+      case e: InEvent => e toMessage match {
+        case SearchGame =>
+
+          out ! OutEvent("Searching game...")
+      }
     }
   }
 
@@ -38,5 +44,19 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
 }
 
-case class InEvent(action: String, msg: String)
-case class OutEvent(msg: String)
+object Messages {
+
+  case class InEvent(action: String) {
+    def toMessage: Message = {
+      action match {
+        case "search-game" => SearchGame
+      }
+    }
+  }
+  case class OutEvent(msg: String)
+
+  trait Message
+
+  case object SearchGame extends Message
+
+}

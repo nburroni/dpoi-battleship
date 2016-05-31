@@ -35,6 +35,9 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
           }
         case MatchPlayer =>
           out ! OutEvent("matched-player")
+
+        case Fire(x, y) =>
+
       }
     }
   }
@@ -56,11 +59,13 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
 object Messages {
 
-  case class InEvent(action: String) {
+  case class InEvent(action: String, fireOption: Option[Fire] = None) {
     def toMessage: Message = {
       action match {
         case "search-game" => SearchGame
         case "match-player" => MatchPlayer
+        case "fire" => fireOption.map((f: Fire) => f).getOrElse(InvalidAction("invalid-fire"))
+
       }
     }
   }
@@ -68,8 +73,9 @@ object Messages {
 
   trait Message
 
-  case object SearchGame extends Message
-
+  case class InvalidAction(msg: String) extends Message
   case object MatchPlayer extends Message
+  case object SearchGame extends Message
+  case class Fire(x: Int, y: Int) extends Message
 
 }

@@ -21,9 +21,9 @@ angular.module 'app'
       if response.status == 'connected'
         $scope.logged()
       else if (response.status == 'not_authorized')
-        document.getElementById('status').innerHTML = 'Please log ' + 'into this app.'
+        console.log 'Please log into this app.'
       else
-        document.getElementById('status').innerHTML = 'Please log ' +  'into Facebook.'
+        console.log  'Please log into Facebook.'
 
     $scope.logged = ->
       FB.api '/me', (user) ->

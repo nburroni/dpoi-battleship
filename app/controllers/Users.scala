@@ -57,4 +57,8 @@ class Users extends Controller {
         response
       }
   }
+
+  def profileView() = Action {
+    Ok(views.html.profile())
+  }
 }

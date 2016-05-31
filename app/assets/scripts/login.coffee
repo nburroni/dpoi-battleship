@@ -17,9 +17,9 @@ angular.module 'app', []
       data = {name: response.name, id: response.id}
       $http.post("/fb-login", data)
       .success((message)->
-        console.log(message)
+        window.location.href = "/profile"
       ).error((message)->
-        console.log(message)
+        window.location.href = "/profile"
       )
 ]
 

@@ -29,10 +29,8 @@ angular.module 'app', []
       FB.api '/me', (user) ->
         data = { name: user.name, id: user.id }
         $http.post("/fb-login", data)
-          .success (message) ->
-            console.log(message)
-          .error (message) ->
-            console.log(message)
+          .success (message) -> window.location.href = "/profile"
+          .error (message) -> console.log(message)
 
 ]
 

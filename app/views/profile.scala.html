@@ -1,4 +1,4 @@
-@main {
+@main { @Html("") } {
     <div class="battleship-bg"></div>
     <nav class="navbar navbar-light">
 
@@ -22,9 +22,11 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-                <button type="button" class="btn btn-primary"><span class="octicon octicon-triangle-right"></span>  Play!</button>
+                <a href="/game" type="button" class="btn btn-primary"><span class="octicon octicon-triangle-right"></span>  Play!</a>
             </div>
             <div class="col-md-2"></div>
         </div>
     </div>
+} {
+    <script src="@routes.Assets.at("scripts/gameCtrl.js")" type="text/javascript"></script>
 }

@@ -8,6 +8,10 @@ scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq( jdbc , cache , ws   , specs2 % Test )
 
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "1.0.1"
+
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.7.3"
+
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"  

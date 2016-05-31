@@ -10,3 +10,6 @@ GET     /socket/connect             controllers.Controller4.socket
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Action triggered after fb login
+POST    /fb-login                   controllers.Users.logUser

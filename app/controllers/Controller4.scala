@@ -4,14 +4,13 @@ import javax.inject.Inject
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.Json
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
 import play.api.libs.streams._
 
 class Controller4 @Inject() (implicit system: ActorSystem, materializer: Materializer) extends Controller{
   import akka.actor._
-  import play.api.mvc.WebSocket.FrameFormatter
 
   implicit val inEventFormat = Json.format[InEvent]
   implicit val outEventFormat = Json.format[OutEvent]
@@ -19,7 +18,6 @@ class Controller4 @Inject() (implicit system: ActorSystem, materializer: Materia
   implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
 
   class MyWebSocketActor(out: ActorRef) extends Actor {
-    import play.api.libs.json.JsValue
     def receive = {
       case InEvent(msg) => out ! OutEvent(msg)
     }

@@ -2,7 +2,7 @@ package util
 
 import org.mongodb.scala.MongoClient
 
-class MongoUtil(dbName: String){
+case class MongoUtil(dbName: String){
   var mongoClient: MongoClient = null
   def getDB = {
     try {

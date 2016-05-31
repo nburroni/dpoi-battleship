@@ -9,6 +9,7 @@ import play.api.libs.json.Json
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
 import play.api.libs.streams._
+import util.Global
 
 class SocketController @Inject()(implicit system: ActorSystem, materializer: Materializer) extends Controller{
 
@@ -20,11 +21,20 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
 
   class MyWebSocketActor(out: ActorRef) extends Actor {
+
     def receive = {
       case e: InEvent => e toMessage match {
         case SearchGame =>
-
-          out ! OutEvent("Searching game...")
+          Global getFirstPendingPlayer match {
+            case  Some(v) =>
+              v ! InEvent("match-player")
+              out ! OutEvent("Matched Player")
+            case None =>
+              Global addPlayer self
+              out ! OutEvent("Searching game...")
+          }
+        case MatchPlayer =>
+          out ! OutEvent("Matched Player")
       }
     }
   }
@@ -50,6 +60,7 @@ object Messages {
     def toMessage: Message = {
       action match {
         case "search-game" => SearchGame
+        case "match-player" => MatchPlayer
       }
     }
   }
@@ -58,5 +69,7 @@ object Messages {
   trait Message
 
   case object SearchGame extends Message
+
+  case object MatchPlayer extends Message
 
 }

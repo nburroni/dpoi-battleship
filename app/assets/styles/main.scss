@@ -6,6 +6,10 @@
   src: url('../font/Tahoma.ttf')
 }
 
+body {
+  font-family: "Tahoma", sans-serif;
+}
+
 @import "index";
 @import "profile";
 @import "game";

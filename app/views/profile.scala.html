@@ -1,27 +1,30 @@
 @main {
     @Html("")
 } {
-    <div class="profile">
+    <div class="profile" ng-controller="ProfileController">
         <div class="battleship-bg"></div>
         <div >
-            <nav class="navbar navbar-light">
-
-                    <!-- Brand -->
+            <nav class="navbar navbar-full navbar-light bg-faded">
                 <a class="navbar-brand" href="#"><span class="octicon octicon-zap"></span>  Corazzata</a>
+                <div class="pull-xs-right fb-data" ng-cloak><span>
+                    {{ user.name }}</span><img ng-src="{{ user.imageSrc }}" class="img-circle"></div>
             </nav>
             <div class="container">
                 <div class="row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        <a href="/game" type="button" class="btn btn-primary">
-                            <span class="octicon octicon-triangle-right"></span>Play!
-                        </a>
+                    <div class="col-md-4 play-btn-area">
+                        <div class="row">
+                            <a href="/game" type="button" class="btn btn-primary play-btn col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
+                                <span class="octicon octicon-triangle-right"></span>Play!
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-md-2"></div>
+                    <div class="col-md-8 stats-area"></div>
                 </div>
             </div>
         </div>
     </div>
 } {
-    <script src="@routes.Assets.at("scripts/gameCtrl.js")" type="text/javascript"></script>
+    @*<script src="@routes.Assets.at("scripts/fb-init.js")" type="text/javascript"></script>*@
+    <script id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js"></script>
+    <script src="@routes.Assets.at("scripts/profileCtrl.js")" type="text/javascript"></script>
 }

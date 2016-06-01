@@ -14,7 +14,31 @@
 
   .navbar {
     background: #697159;
+    height: 54px;
+
+    .fb-data {
+      height: 100%;
+      span {
+        color: white;
+        padding-right: 15px;
+        cursor: default;
+      }
+      img {
+        max-height: 100%;
+
+      }
+    }
   }
+
+  .play-btn-area {
+    .play-btn {
+    }
+  }
+
+  .stats-area {
+
+  }
+
   .nav-link, .navbar-brand {
     color: white !important;
   }

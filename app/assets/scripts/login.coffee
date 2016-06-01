@@ -11,6 +11,9 @@ angular.module 'app'
 
       FB.getLoginStatus (response) -> $scope.checkStatus(response)
 
+    $scope.login = ->
+      FB.login ((response) -> $scope.checkStatus(response)), { scope: 'public_profile,email' }
+
     window.fbLogin = ->
       document.getElementById('status').innerHTML = "Logging in."
       FB.getLoginStatus((response) ->

@@ -1,9 +1,13 @@
-@main { @Html("") } {
+@main {
+    @Html("")
+} {
 
-    <div ng-controller="FbController">
-
-        <fb:login-button scope="public_profile,email" onlogin="fbLogin();"></fb:login-button>
-
+    <div class="index" ng-controller="FbController">
+        <div class="battleship-bg"><div class="overlay"></div></div>
+        @*<fb:login-button scope="public_profile,email" onlogin="fbLogin();"></fb:login-button>*@
+        <div class="fb-login" ng-click="login()">
+            <span><i class="fa fa-facebook"></i> Log In</span>
+        </div>
     </div>
 
 } {

@@ -1,0 +1,62 @@
+.index {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .battleship-bg{
+    background-image: url(../images/battleship-1.gif);
+    background-size: cover;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    opacity: 0.5;
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.3);
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  .fb-login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: #3765a3;
+    border-radius: 15px;
+    color: white;
+    padding: 10px 30px;
+    font-size: 3rem;
+    cursor: pointer;
+    transition: background-color .1s;
+
+    &:hover {
+      background-color: #324a82;
+    }
+
+    &:active {
+      background-color: #3765a3;
+    }
+
+    span {
+      i {
+        border-right: #557cb1 1px solid;
+        padding-right: 15px;
+      }
+
+      font-family: "Tahoma", sans-serif;
+    }
+  }
+
+}

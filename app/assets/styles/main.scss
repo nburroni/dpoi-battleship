@@ -1,5 +1,12 @@
 @import "../external/bootstrap/scss/bootstrap-flex";
 @import "vars";
+
+@font-face {
+  font-family: "Tahoma";
+  src: url('../font/Tahoma.ttf')
+}
+
+@import "index";
 @import "profile";
 @import "game";
 @import "../external/octicons/octicons";

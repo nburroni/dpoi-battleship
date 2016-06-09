@@ -14,4 +14,28 @@
   .miss-target{
     color: #0006d0;
   }
+  .table{
+    background: #043450;
+    color: white;
+    text-align: center;
+    th{
+      background: black;
+    }
+    td{
+      position: relative;
+    }
+  }
+  .ships-container{
+    img{
+      height: 49px;
+      width: 260px;
+    }
+  }
+  .floating-img{
+    position: absolute;
+    height: 49px;
+    width: 260px;
+    top: 0;
+    left: 0;
+  }
 }

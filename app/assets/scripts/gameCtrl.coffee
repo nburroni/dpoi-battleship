@@ -19,6 +19,7 @@ angular.module 'app'
           if currentImg.length != 0
             shp = currentImg[0]
             sendableShips.push {start: {x: shp.x, y: shp.y}, end: {x: shp.endX, y: shp.endY}}
+      console.log sendableShips
       socket.send {action: "placed-ships", ships: sendableShips}
     $scope.initBoard = ->
       for nico in [0..9]
@@ -109,7 +110,7 @@ angular.module 'app'
           $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
           for i in [0..data.width-1]
             $scope.myBoard[parseInt(id.charAt(1))+i][parseInt(id.charAt(0))].busy = true
-          data.endX = i-1
+          data.endX = i
           data.endY = data.y
           relatives.forEach((cell) -> cell.style.opacity = 0)
         else
@@ -124,7 +125,7 @@ angular.module 'app'
           $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
           for j in [0..data.width-1]
             $scope.myBoard[parseInt(id.charAt(1))+j][parseInt(id.charAt(0))].busy = true
-          data.endX = j-1
+          data.endX = j
           data.endY = data.y
           relatives.forEach((cell) -> cell.style.opacity = 0)
       else

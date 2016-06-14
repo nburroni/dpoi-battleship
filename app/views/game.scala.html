@@ -53,7 +53,7 @@
             </div>
         </div>
         <div ng-show="startGame && !placeShips">
-            <h1>Click on a cell to select the position and the click FIRE!!!</h1>
+            <h1>{{ myTurn ? "Your" : "Opponent's" }} turn</h1>
             <table class="table table-bordered" id="shooting-board">
                 <thead>
                     <tr>

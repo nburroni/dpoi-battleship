@@ -59,6 +59,10 @@ angular.module 'app'
           $scope.myFires.push(response.fire)
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("miss-target")
+        when "my-turn"
+          $scope.myTurn = true
+        when "their-turn"
+          $scope.myTurn = false
         else
           console.log("unknown message")
       $scope.$apply()

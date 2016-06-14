@@ -7,7 +7,14 @@
             </div>
         </div>
         <div ng-show="placeShips">
-            <h1>Please, place your ships.</h1>
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1>Please, place your ships.</h1>
+                </div>
+                <div class="col-sm-4">
+                    <a class="btn btn-primary pull-sm-right" ng-click="placeShips = false">I'm Done!</a>
+                </div>
+            </div>
             <table class="table table-bordered" id="shooting-board">
                 <thead>
                     <tr>

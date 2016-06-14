@@ -8,14 +8,14 @@ angular.module 'app'
     $scope.selected = null
     $scope.opponentFires = []
     $scope.myFires = []
-    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0},{src: "assets/images/ships/ship-1.png", width: 2, id: 1}]
+    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0},{src: "assets/images/ships/ship-1.png", width: 3, id: 1}]
     $scope.myBoard = []
 
     $scope.initBoard = ->
       for nico in [0..9]
         $scope.myBoard[nico] = []
         for lucho in [0..9]
-          $scope.myBoard[nico][lucho] = []
+          $scope.myBoard[nico][lucho] = {img:[], busy: false}
     $scope.initBoard()
     $scope.selectPosition = (x, y) ->
       if $scope.selected
@@ -70,40 +70,49 @@ angular.module 'app'
         if rel then rels.push rel
       rels
     $scope.checkRelatives = (ship, id) ->
-      for idx in [(ship.width*-1)..(ship.width-1)]
-        newid = id.substr(0, id.length-1)
-        rel = document.getElementById(newid + (parseInt(id.charAt(id.length-1))+idx))
-        if rel
-          cellX = parseInt(id.charAt(id.length - 1))
-          cellY = parseInt(id.charAt(id.length - 2))
-          if $scope.myBoard[cellX][cellY].length != 0 then return false
-      true
+      y = parseInt id.substr 0, id.length-1
+      x = parseInt id.substr id.length - 1, id.length
+      for i in [0..ship.width-1]
+        return true if $scope.myBoard[x+i][y].busy
+      false
+
+#    $scope.onDragStart = (data, evt) ->
+
     $scope.onDragComplete = (data, evt) ->
-      console.log("drag success, data:", data)
-      console.log("evt success, evt:", evt)
+      for j in [0..data.width-1]
+        $scope.myBoard[data.x+j][data.y].busy = false
 
     $scope.onDropComplete = (data, evt, that) ->
       td = document.getElementById(that)
       id = td.id.substr(td.id.length-2, td.id.length)
       theParent = evt.element[0].parentNode.getAttribute("class")
-      target = $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))]
       relatives = $scope.getRelatives(data, td.id);
-      relativesFree = $scope.checkRelatives(data, td.id)
-      if target.length == 0 and relativesFree
+      relativesFree = $scope.checkRelatives(data, id)
+      if not relativesFree
         if theParent.indexOf("ships-container") != -1
           $scope.currentShips = $scope.currentShips.filter((sh) -> sh.id != data.id)
           data.x = parseInt(id.charAt(1))
           data.y = parseInt(id.charAt(0))
-          $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))] = [data]
+          $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
+          for i in [0..data.width-1]
+            $scope.myBoard[parseInt(id.charAt(1))+i][parseInt(id.charAt(0))].busy = true
           relatives.forEach((cell) -> cell.style.opacity = 0)
         else
           prevId = td.id.substr(0, td.id.length-2) + data.y + data.x
           prevRelatives = $scope.getRelatives(data, prevId);
           prevRelatives.forEach((cell) -> cell.style.opacity = 1)
-          $scope.myBoard[data.x][data.y] = []
+          for j in [0..data.width-1]
+            $scope.myBoard[data.x+j][data.y].busy = false
+          $scope.myBoard[data.x][data.y].img = []
           data.x = parseInt(id.charAt(1))
           data.y = parseInt(id.charAt(0))
-          t$scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))] = [data]
-      return ""
+          $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
+          for j in [0..data.width-1]
+            $scope.myBoard[parseInt(id.charAt(1))+j][parseInt(id.charAt(0))].busy = true
+          relatives.forEach((cell) -> cell.style.opacity = 0)
+      else
+        for j in [0..data.width-1]
+          $scope.myBoard[data.x+j][data.y].busy = true
+        ""
 
 ]

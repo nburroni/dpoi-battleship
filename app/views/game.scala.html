@@ -12,7 +12,7 @@
                     <h1>Please, place your ships.</h1>
                 </div>
                 <div class="col-sm-4">
-                    <a class="btn btn-primary pull-sm-right" ng-click="placeShips = false">I'm Done!</a>
+                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()">I'm Done!</a>
                 </div>
             </div>
             <table class="table table-bordered" id="shooting-board">
@@ -50,13 +50,13 @@
                     <tr ng-repeat="letter in letters" ng-init="letterIndex = $index">
                         <th>{{letter}}</th>
                         <td ng-repeat="number in numbers" id="{{'ship-' + $parent.$index + '' + number}}" ng-drop="true" ng-drop-success="onDropComplete($data, $event, 'ship-' + letterIndex + '' + number)"><i class="fa fa-circle"></i>
-                            <img ng-src="{{ship.src}}" alt="nada" ng-drag="true" ng-drag-start="onDragStart($data, $event)" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)"  ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                            <img ng-src="{{ship.src}}" alt="nada" ng-drag="true" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)"  ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="ships-container">
-                <img ng-src="{{ship.src}}" alt="ship-1" id="{{$index}}" ng-repeat="ship in currentShips" ng-drag="true" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                <img ng-src="{{ship.src}}" alt="ship-1" id="{{$index}}" ng-repeat="ship in currentShips" ng-drag="true" ng-drag-data="ship" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
             </div>
         </div>
         <div ng-show="startGame && !placeShips">

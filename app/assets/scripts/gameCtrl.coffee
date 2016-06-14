@@ -10,7 +10,16 @@ angular.module 'app'
     $scope.myFires = []
     $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0},{src: "assets/images/ships/ship-1.png", width: 3, id: 1}]
     $scope.myBoard = []
-
+    $scope.shipsPlaced = ->
+      $scope.placeShips = false
+      sendableShips = []
+      for i in [0..9]
+        for j in [0..9]
+          currentImg = $scope.myBoard[i][j].img
+          if currentImg.length != 0
+            shp = currentImg[0]
+            sendableShips.push {start: {x: shp.x, y: shp.y}, end: {x: shp.endX, y: shp.endY}}
+      socket.send {action: "placed-ships", ships: sendableShips}
     $scope.initBoard = ->
       for nico in [0..9]
         $scope.myBoard[nico] = []
@@ -100,6 +109,8 @@ angular.module 'app'
           $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
           for i in [0..data.width-1]
             $scope.myBoard[parseInt(id.charAt(1))+i][parseInt(id.charAt(0))].busy = true
+          data.endX = i-1
+          data.endY = data.y
           relatives.forEach((cell) -> cell.style.opacity = 0)
         else
           prevId = td.id.substr(0, td.id.length-2) + data.y + data.x
@@ -113,6 +124,8 @@ angular.module 'app'
           $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
           for j in [0..data.width-1]
             $scope.myBoard[parseInt(id.charAt(1))+j][parseInt(id.charAt(0))].busy = true
+          data.endX = j-1
+          data.endY = data.y
           relatives.forEach((cell) -> cell.style.opacity = 0)
       else
         for j in [0..data.width-1]

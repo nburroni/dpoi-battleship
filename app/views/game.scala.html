@@ -32,6 +32,25 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="fire-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">FIRE!</h4>
+                    </div>
+                    <div class="modal-body centered-text">
+                        <h3>{{fireMessage.message}}</h3>
+                        <i class="{{fireMessage.icon}} fa-3x"></i>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div ng-show="placeShips" class="container-fluid">
             <div id="waiting-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="static">
                 <div class="modal-dialog modal-sm">
@@ -46,7 +65,7 @@
                     <h1>Please, place your ships.</h1>
                 </div>
                 <div class="col-sm-4">
-                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()">I'm Done!</a>
+                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">I'm Done!</a>
                 </div>
                 <div class="col-md-8">
                     <table class="table table-bordered" id="shooting-board">

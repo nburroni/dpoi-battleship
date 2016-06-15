@@ -63,7 +63,7 @@
                 <div class="col-sm-4">
                     <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">I'm Done!</a>
                 </div>
-                <div class="col-md-8">
+                <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
                         <thead>
                             <tr>
@@ -106,7 +106,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="ships-container col-md-4">
+                <div class="ships-container col-xs-12 col-xl-6">
                     <img ng-src="{{ship.src}}" alt="ship-1" id="{{$index}}" ng-repeat="ship in currentShips" ng-drag="true" ng-drag-data="ship" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
                 </div>
             </div>

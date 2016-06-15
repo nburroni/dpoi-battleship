@@ -32,17 +32,21 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="fire-modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <h4 class="modal-title">FIRE!</h4>
                     </div>
                     <div class="modal-body centered-text">
                         <h3>{{fireMessage.message}}</h3>
-                        @*<i class="{{fireMessage.icon}} fa-3x"></i>*@
-                        <img ng-src="{{fireMessage.gif}}" alt="gif">
+                        <i class="{{fireMessage.icon}} fa-3x"></i>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -63,7 +67,7 @@
                 <div class="col-sm-4">
                     <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">I'm Done!</a>
                 </div>
-                <div class="col-xs-12 col-xl-6">
+                <div class="col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
                         <thead>
                             <tr>
@@ -106,12 +110,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="ships-container col-xs-12 col-xl-6">
+                <div class="ships-container col-xl-6">
                     <img ng-src="{{ship.src}}" alt="ship-1" id="{{$index}}" ng-repeat="ship in currentShips" ng-drag="true" ng-drag-data="ship" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
                 </div>
             </div>
         </div>
-        <div ng-show="startGame && !placeShips && !result.show" class="container-fluid">
+        <div ng-show="startGame && !placeShips" class="container-fluid">
             <div class="row">
                 <div class="col-xs-12 text-xs-center">
                     <h2>{{ myTurn ? "Your" : "Opponent's" }} turn</h2>
@@ -119,10 +123,10 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-xl-6 text-xs-center">
-                    <h3>Opponent's board</h3>
+                    <h3>Your board</h3>
                 </div>
                 <div class="col-xl-6 text-xs-center hidden-lg-down">
-                    <h3>Your board</h3>
+                    <h3>Opponent's board</h3>
                 </div>
                 <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
@@ -166,7 +170,7 @@
                     <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
                 </div>
                 <div class="col-xs-12 col-xl-6 text-xs-center hidden-xl-up">
-                    <h3>Your board</h3>
+                    <h3>Opponent's board</h3>
                 </div>
                 <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="my-board">
@@ -211,9 +215,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <div ng-show="result.show" class="text-xs-center">
-            <h1>{{result.message}}</h1>
         </div>
     </div>
 } {

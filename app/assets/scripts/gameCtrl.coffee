@@ -9,7 +9,7 @@ angular.module 'app'
     $scope.selected = null
     $scope.opponentFires = []
     $scope.myFires = []
-    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1},{src: "assets/images/ships/ship-1.png", width: 3, id: 1, height: 1}]
+    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1},{src: "assets/images/ships/ship-1.png", width: 3, id: 1, height: 1}, {src: "assets/images/ships/ship-1.png", width: 3, id: 2, height: 1}, {src: "assets/images/ships/ship-1.png", width: 4, id: 3, height: 1}, {src: "assets/images/ships/ship-1.png", width: 5, id: 4, height: 1}]
     $scope.myBoard = []
     $scope.fireMessage = {}
     $scope.hitMessage = {message: "HIT", icon: "fa fa-dot-circle-o"}
@@ -131,13 +131,13 @@ angular.module 'app'
       y = parseInt id.substr 0, id.length-1
       x = parseInt id.substr id.length - 1, id.length
       for i in [0..ship.width-1]
-        return true if $scope.myBoard[x+i][y].busy
+        return true if (x+i >9) || (not $scope.myBoard[x+i][y]) || ($scope.myBoard[x+i][y].busy)
       false
     $scope.checkVRelatives = (ship, id) ->
       y = parseInt id.substr 0, id.length-1
       x = parseInt id.substr id.length - 1, id.length
       for i in [0..ship.height-1]
-        return true if $scope.myBoard[x][y+i].busy
+        return true if (y+i >9) || (not $scope.myBoard[x][y+i]) || ($scope.myBoard[x][y+i].busy)
       false
 
 
@@ -236,10 +236,7 @@ angular.module 'app'
             data.endX = data.x + data.width - 1
             data.endY = data.y
             relatives.forEach((cell) -> cell.style.opacity = 0)
-        else
-          for j in [0..data.width-1]
-            $scope.myBoard[data.x+j][data.y].busy = true
-          ""
+        return
       else
         relatives = $scope.getVRelatives(data, td.id);
         relativesFree = $scope.checkVRelatives(data, id)
@@ -269,9 +266,6 @@ angular.module 'app'
             data.endX = data.x + data.width - 1
             data.endY = data.y + data.height - 1
             relatives.forEach((cell) -> cell.style.opacity = 0)
-        else
-          for j in [0..data.height-1]
-            $scope.myBoard[data.x][data.y+j].busy = true
-          ""
+        return
 
 ]

@@ -32,7 +32,7 @@ angular.module 'app'
       FB.api '/me', (user) ->
         data = { name: user.name, id: user.id }
         $http.post("/fb-login", data)
-          .success (message) -> window.location.href = "/profile"
+          .success (message) -> window.location.href = "/game"
           .error (message) -> console.log(message)
 
 ]

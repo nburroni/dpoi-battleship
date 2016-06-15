@@ -98,8 +98,18 @@
         </div>
         <div ng-show="startGame && !placeShips" class="container-fluid">
             <div class="row">
-                <div class="col-xl-6">
-                    <h1>{{ myTurn ? "Your" : "Opponent's" }} turn</h1>
+                <div class="col-xs-12 text-xs-center">
+                    <h2>{{ myTurn ? "Your" : "Opponent's" }} turn</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-xl-6 text-xs-center">
+                    <h3>Your board</h3>
+                </div>
+                <div class="col-xl-6 text-xs-center hidden-lg-down">
+                    <h3>Opponent's board</h3>
+                </div>
+                <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
                         <thead>
                             <tr>
@@ -138,10 +148,12 @@
                             </tr>
                         </tbody>
                     </table>
+                    <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
                 </div>
-                <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
-                <div class="col-xl-6">
-                    <h1>These are your ships</h1>
+                <div class="col-xs-12 col-xl-6 text-xs-center hidden-xl-up">
+                    <h3>Opponent's board</h3>
+                </div>
+                <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="my-board">
                         <thead>
                             <tr>

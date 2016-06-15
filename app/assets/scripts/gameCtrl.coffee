@@ -117,31 +117,43 @@ angular.module 'app'
 
     $scope.rotateShip = (sp, id)->
       if sp.height == 1
-        prevId = id.substr(0, id.length-2) + sp.y + sp.x
-        prevRelatives = $scope.getHRelatives(sp, prevId);
         sp.height = sp.width
-        sp.width = 1
-        sp.src = sp.src.replace("ship-", "ship-r-")
-        prevRelatives.forEach((cell) -> cell.style.opacity = 1)
-        for j in [0..sp.height-1]
-          $scope.myBoard[sp.x+j][sp.y].busy = false
-        for k in [0..sp.height-1]
-          $scope.myBoard[sp.x][sp.y+k].busy = true
-        relatives = $scope.getVRelatives(sp, id)
-        relatives.forEach((cell) -> cell.style.opacity = 0)
-      else
-        prevId = id.substr(0, id.length-2) + sp.y + sp.x
-        prevRelatives = $scope.getVRelatives(sp, prevId);
-        sp.width = sp.height
+        $scope.myBoard[sp.x][sp.y].busy = false
+        relativesFree = $scope.checkVRelatives(sp, id.substr(id.length-2, id.length))
+        $scope.myBoard[sp.x][sp.y].busy = true
         sp.height = 1
-        sp.src = sp.src.replace("ship-r-", "ship-")
-        prevRelatives.forEach((cell) -> cell.style.opacity = 1)
-        for j in [0..sp.width-1]
-          $scope.myBoard[sp.x][sp.y+j].busy = false
-        for k in [0..sp.width-1]
-          $scope.myBoard[sp.x+k][sp.y].busy = true
-        relatives = $scope.getHRelatives(sp, id)
-        relatives.forEach((cell) -> cell.style.opacity = 0)
+        if not relativesFree
+          prevId = id.substr(0, id.length-2) + sp.y + sp.x
+          prevRelatives = $scope.getHRelatives(sp, prevId);
+          sp.height = sp.width
+          sp.width = 1
+          sp.src = sp.src.replace("ship-", "ship-r-")
+          prevRelatives.forEach((cell) -> cell.style.opacity = 1)
+          for j in [0..sp.height-1]
+            $scope.myBoard[sp.x+j][sp.y].busy = false
+          for k in [0..sp.height-1]
+            $scope.myBoard[sp.x][sp.y+k].busy = true
+          relatives = $scope.getVRelatives(sp, id)
+          relatives.forEach((cell) -> cell.style.opacity = 0)
+      else
+        sp.width = sp.height
+        $scope.myBoard[sp.x][sp.y].busy = false
+        relativesFree = $scope.checkHRelatives(sp, id.substr(id.length-2, id.length))
+        $scope.myBoard[sp.x][sp.y].busy = true
+        sp.width = 1
+        if not relativesFree
+          prevId = id.substr(0, id.length-2) + sp.y + sp.x
+          prevRelatives = $scope.getVRelatives(sp, prevId);
+          sp.width = sp.height
+          sp.height = 1
+          sp.src = sp.src.replace("ship-r-", "ship-")
+          prevRelatives.forEach((cell) -> cell.style.opacity = 1)
+          for j in [0..sp.width-1]
+            $scope.myBoard[sp.x][sp.y+j].busy = false
+          for k in [0..sp.width-1]
+            $scope.myBoard[sp.x+k][sp.y].busy = true
+          relatives = $scope.getHRelatives(sp, id)
+          relatives.forEach((cell) -> cell.style.opacity = 0)
 
 #    $scope.rotatingButton = (->
 #      button = document.createElement("img")

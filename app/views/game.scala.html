@@ -50,7 +50,8 @@
                     <tr ng-repeat="letter in letters" ng-init="letterIndex = $index">
                         <th>{{letter}}</th>
                         <td ng-repeat="number in numbers" id="{{'ship-' + $parent.$index + '' + number}}" ng-drop="true" ng-drop-success="onDropComplete($data, $event, 'ship-' + letterIndex + '' + number)"><i class="fa fa-circle"></i>
-                            <img ng-src="{{ship.src}}" alt="nada" ng-drag="true" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)"  ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                            <img src="assets/images/rotate.jpg" alt="Rotate" ng-click="rotateShip(ship, 'ship-' + letterIndex + number)" class="rotate-button" ng-repeat="ship in myBoard[number][letterIndex].img">
+                            <img ng-src="{{ship.src}}" alt="nada" ng-drag="true" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)"  ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'height1': ship.height == 1, 'height2': ship.height == 2, 'height3': ship.height == 3, 'height4': ship.height == 4, 'height5': ship.height == 5, 'width1': ship.width == 1, 'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
                         </td>
                     </tr>
                 </tbody>

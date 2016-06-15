@@ -43,11 +43,17 @@ object Messages {
 
   case object GameReady extends Message
 
-  case class ShipPlacement(start: Coords, end: Coords) {
+  case class ShipPlacement(start: Coords, end: Coords, lives: Int) {
+    var alterLives = lives
     def contains(coords: Coords) = {
       (start.x <= coords.x && coords.x <= end.x) && (start.y <= coords.y && coords.y <= end.y)
     }
   }
+
+  case class Sunk(sunk: Boolean){
+    var isSunk = sunk
+  }
+
   case class Coords(x: Int, y: Int)
 
   case object YourTurn extends Message

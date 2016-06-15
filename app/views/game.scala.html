@@ -6,6 +6,27 @@
                 <i class="fa fa-spinner fa-spin fa-5x"></i>
             </div>
         </div>
+
+        <div class="modal fade" id="fire-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">FIRE!</h4>
+                    </div>
+                    <div class="modal-body centered-text">
+                        <h3>{{fireMessage.message}}</h3>
+                        <i class="{{fireMessage.icon}} fa-3x"></i>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div ng-show="placeShips">
             <div class="row">
                 <div class="col-sm-8">
@@ -134,9 +155,11 @@
                     </tr>
                 </tfoot>
                 <tbody>
-                    <tr ng-repeat="letter in letters">
+                    <tr ng-repeat="letter in letters" ng-init="letterIndex = $index">
                         <th>{{letter}}</th>
-                        <td ng-repeat="number in numbers" id="{{'my-' + $parent.$index + '' + number}}"><i class="fa fa-circle"></i></td>
+                        <td ng-repeat="number in numbers" id="{{'my-' + $parent.$index + '' + number}}"><i class="fa fa-circle"></i>
+                            <img ng-src="{{ship.src}}" alt="nada" ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'height1': ship.height == 1, 'height2': ship.height == 2, 'height3': ship.height == 3, 'height4': ship.height == 4, 'height5': ship.height == 5, 'width1': ship.width == 1, 'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                        </td>
                     </tr>
                 </tbody>
             </table>

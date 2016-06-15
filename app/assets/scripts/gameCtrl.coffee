@@ -11,6 +11,10 @@ angular.module 'app'
     $scope.myFires = []
     $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1},{src: "assets/images/ships/ship-1.png", width: 3, id: 1, height: 1}]
     $scope.myBoard = []
+    $scope.fireMessage = {}
+    $scope.hitMessage = {message: "HIT", icon: "fa fa-dot-circle-o"}
+    $scope.sinkMessage = {message: "SUNKEN", icon: "fa fa-anchor"}
+    $scope.missMessage = {message: "MISS", icon: "fa fa-tint"}
 
     $scope.shipsPlaced = ->
       sendableShips = []
@@ -19,9 +23,20 @@ angular.module 'app'
           currentImg = $scope.myBoard[i][j].img
           if currentImg.length != 0
             shp = currentImg[0]
-            sendableShips.push {start: {x: shp.x, y: shp.y}, end: {x: shp.endX, y: shp.endY}}
+            if shp.width == 1
+              lives = shp.height
+              relatives = $scope.getVRelatives(shp, 'my-'+ shp.y + shp.x)
+              relatives.forEach((cell) -> cell.style.opacity = 0)
+            else
+              lives = shp.width
+              relatives = $scope.getHRelatives(shp, 'my-'+ shp.y + shp.x)
+              relatives.forEach((cell) -> cell.style.opacity = 0)
+            sendableShips.push {start: {x: shp.x, y: shp.y}, end: {x: shp.endX, y: shp.endY}, lives: lives}
+
       console.log sendableShips
       socket.send {action: "placed-ships", ships: sendableShips}
+      $scope.placeShips = false
+
 
     $scope.initBoard = ->
       for nico in [0..9]
@@ -69,17 +84,28 @@ angular.module 'app'
           $scope.myFires.push(response.fire)
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("hit-target")
+          $scope.fireMessage = $scope.hitMessage
+          $('#fire-modal').modal('toggle')
         when "miss"
           $scope.selected = null
           $scope.myFires.push(response.fire)
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("miss-target")
+          $scope.fireMessage = $scope.missMessage
+          $('#fire-modal').modal('toggle')
         when "my-turn"
           $scope.myTurn = true
         when "their-turn"
           $scope.myTurn = false
         when "game-ready"
           $scope.placeShips = false
+        when "sunk-ship"
+          $scope.selected = null
+          $scope.myFires.push(response.fire)
+          $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
+          $("#opp-"+response.fire.y+''+response.fire.x).addClass("hit-target")
+          $scope.fireMessage = $scope.sinkMessage
+          $('#fire-modal').modal('toggle')
         else
           console.log("unknown message")
       $scope.$apply()

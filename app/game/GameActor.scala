@@ -52,6 +52,7 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
                     if (placement.alterLives == 0) {
                       sunk.isSunk = true
                       sunken = true
+                      playerData.mySunkenShips += 1
                     }
                     true
                   } else {
@@ -61,8 +62,14 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
           }
           if (hit) {
             if(sunken){
-              currentPlayer ! SunkShip(x, y)
-              rival ! OpponentHit(x, y)
+              val allSunken = rivalData.shipsOption.fold(false)(_.forall(_._2.isSunk))
+              if (allSunken){
+                currentPlayer ! YouWon(x,y)
+                rival ! YouLost(x,y)
+              }else{
+                currentPlayer ! SunkShip(x, y)
+                rival ! OpponentSunkShip(x, y)
+              }
             }else{
               currentPlayer ! HitShot(x, y)
               rival ! OpponentHit(x, y)
@@ -94,6 +101,7 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
     var hasTurn = turn
     var gridOption: Option[List[Coords]] = None
     var shipsOption: Option[Map[ShipPlacement, Sunk]] = None
+    var mySunkenShips: Int = 0
   }
 
 }

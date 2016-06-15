@@ -60,7 +60,7 @@ object Messages {
 
   case object OpponentTurn extends Message
 
-  case object YouWon extends Message
+  case class YouWon(x: Int, y: Int) extends Message
 
-  case object YouLost extends Message
+  case class YouLost(x: Int, y: Int) extends Message
 }

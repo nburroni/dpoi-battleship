@@ -61,6 +61,15 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
       case SunkShip(x, y) =>
         out ! ActionOut("sunk-ship", Some(Fire(x,y)))
+
+      case YouLost(x, y) =>
+        out ! ActionOut("lost-match", Some(Fire(x,y)))
+
+      case YouWon(x, y) =>
+        out ! ActionOut("won-match", Some(Fire(x,y)))
+
+      case OpponentSunkShip(x,y) =>
+        out ! ActionOut("sunk-received", Some(Fire(x,y)))
     }
   }
 

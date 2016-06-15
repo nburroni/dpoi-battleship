@@ -33,7 +33,7 @@
                     <h1>Please, place your ships.</h1>
                 </div>
                 <div class="col-sm-4">
-                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()">I'm Done!</a>
+                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">I'm Done!</a>
                 </div>
             </div>
             <table class="table table-bordered" id="shooting-board">

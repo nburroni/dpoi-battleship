@@ -33,9 +33,11 @@ object Messages {
 
   case class MissedShot(x: Int, y: Int) extends Message
   case class HitShot(x: Int, y: Int) extends Message
+  case class SunkShip(x: Int, y: Int) extends Message
 
   case class OpponentMissed(x: Int, y: Int) extends Message
   case class OpponentHit(x: Int, y: Int) extends Message
+  case class OpponentSunkShip(x: Int, y: Int) extends Message
 
   case class PlacedShips(placements: List[ShipPlacement]) extends Message
 
@@ -52,6 +54,7 @@ object Messages {
 
   case object OpponentTurn extends Message
 
-  //  case class FireTo(userKey: String, x: Int, y: Int) extends Message
+  case object YouWon extends Message
 
+  case object YouLost extends Message
 }

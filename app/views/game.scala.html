@@ -1,12 +1,46 @@
-@main { @Html("") } {
-    <div class="game" ng-controller="GameController">
-        <div class="card card-block" ng-hide="startGame">
-            <div class="card-title">Searching for other player</div>
-            <div class="card-text">
-                <i class="fa fa-spinner fa-spin fa-5x"></i>
+@main {
+    @Html("")
+} {
+    <div class="profile" ng-controller="ProfileController">
+        <div class="battleship-bg"></div>
+        <div >
+            <nav class="navbar navbar-full navbar-light bg-faded">
+                <a class="navbar-brand" href="#"><span class="octicon octicon-zap"></span>  Corazzata</a>
+                <div class="pull-xs-right fb-data" ng-cloak><span>
+                    {{ user.name }}</span><img ng-src="{{ user.imageSrc }}" class="img-circle"></div>
+            </nav>
+        </div>
+    </div>
+    <div class="game profile" ng-controller="GameController">
+        <div class="container">
+            <div class="row" ng-hide="searching || startGame">
+                <div class="col-md-4 play-btn-area">
+                    <div class="row">
+                        <a ng-click="searchGame()" type="button" class="btn btn-primary play-btn col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
+                            Play!
+                            <span class="octicon octicon-triangle-right"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card-block text-xs-center col" ng-show="!startGame && searching">
+                    <div class="card-title">Searching for other player</div>
+                    <div class="card-text">
+                        <i class="fa fa-spinner fa-spin fa-5x"></i>
+                    </div>
+                </div>
             </div>
         </div>
-        <div ng-show="placeShips">
+        <div ng-show="placeShips" class="container-fluid">
+            <div id="waiting-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="text-xs-center"><i class="fa fa-spinner fa-spin fa-5x"></i></div>
+                        <div class="text-xs-center">Waiting for other player...</div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-8">
                     <h1>Please, place your ships.</h1>
@@ -14,135 +48,145 @@
                 <div class="col-sm-4">
                     <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()">I'm Done!</a>
                 </div>
-            </div>
-            <table class="table table-bordered" id="shooting-board">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>#</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <tr ng-repeat="letter in letters" ng-init="letterIndex = $index">
-                        <th>{{letter}}</th>
-                        <td ng-repeat="number in numbers" id="{{'ship-' + $parent.$index + '' + number}}" ng-drop="true" ng-drop-success="onDropComplete($data, $event, 'ship-' + letterIndex + '' + number)"><i class="fa fa-circle"></i>
-                            <img src="assets/images/rotate.jpg" alt="Rotate" ng-click="rotateShip(ship, 'ship-' + letterIndex + number)" class="rotate-button" ng-repeat="ship in myBoard[number][letterIndex].img">
-                            <img ng-src="{{ship.src}}" alt="nada" ng-drag="true" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)"  ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'height1': ship.height == 1, 'height2': ship.height == 2, 'height3': ship.height == 3, 'height4': ship.height == 4, 'height5': ship.height == 5, 'width1': ship.width == 1, 'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="ships-container">
-                <img ng-src="{{ship.src}}" alt="ship-1" id="{{$index}}" ng-repeat="ship in currentShips" ng-drag="true" ng-drag-data="ship" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                <div class="col-md-8">
+                    <table class="table table-bordered" id="shooting-board">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr ng-repeat="letter in letters" ng-init="letterIndex = $index">
+                                <th>{{letter}}</th>
+                                <td ng-repeat="number in numbers" id="{{'ship-' + $parent.$index + '' + number}}" ng-drop="true" ng-drop-success="onDropComplete($data, $event, 'ship-' + letterIndex + '' + number)"><i class="fa fa-circle"></i>
+                                    <img src="assets/images/rotate.jpg" alt="Rotate" ng-click="rotateShip(ship, 'ship-' + letterIndex + number)" class="rotate-button" ng-repeat="ship in myBoard[number][letterIndex].img">
+                                    <img ng-src="{{ship.src}}" alt="nada" ng-drag="true" ng-drag-data="ship" ng-drag-success="onDragComplete($data, $event)" ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'height1': ship.height == 1, 'height2': ship.height == 2, 'height3': ship.height == 3, 'height4': ship.height == 4, 'height5': ship.height == 5, 'width1': ship.width == 1, 'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="ships-container col-md-4">
+                    <img ng-src="{{ship.src}}" alt="ship-1" id="{{$index}}" ng-repeat="ship in currentShips" ng-drag="true" ng-drag-data="ship" ng-class="{'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                </div>
             </div>
         </div>
-        <div ng-show="startGame && !placeShips">
-            <h1>{{ myTurn ? "Your" : "Opponent's" }} turn</h1>
-            <table class="table table-bordered" id="shooting-board">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>#</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <tr ng-repeat="letter in letters">
-                        <th>{{letter}}</th>
-                        <td ng-repeat="number in numbers" id="{{'opp-' + $parent.$index + '' + number}}" ng-click="selectPosition(number, $parent.$index)"><i class="fa fa-circle"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
-            <h1>These are your ships</h1>
-            <table class="table table-bordered" id="my-board">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>#</th>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>6</th>
-                        <th>7</th>
-                        <th>8</th>
-                        <th>9</th>
-                        <th>10</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <tr ng-repeat="letter in letters">
-                        <th>{{letter}}</th>
-                        <td ng-repeat="number in numbers" id="{{'my-' + $parent.$index + '' + number}}"><i class="fa fa-circle"></i></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div ng-show="startGame && !placeShips" class="container-fluid">
+            <div class="row">
+                <div class="col-xl-6">
+                    <h1>{{ myTurn ? "Your" : "Opponent's" }} turn</h1>
+                    <table class="table table-bordered" id="shooting-board">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr ng-repeat="letter in letters">
+                                <th>{{letter}}</th>
+                                <td ng-repeat="number in numbers" id="{{'opp-' + $parent.$index + '' + number}}" ng-click="selectPosition(number, $parent.$index)"><i class="fa fa-circle"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
+                <div class="col-xl-6">
+                    <h1>These are your ships</h1>
+                    <table class="table table-bordered" id="my-board">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr ng-repeat="letter in letters">
+                                <th>{{letter}}</th>
+                                <td ng-repeat="number in numbers" id="{{'my-' + $parent.$index + '' + number}}"><i class="fa fa-circle"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 } {
+    <script id="facebook-jssdk" src="//connect.facebook.net/en_US/sdk.js"></script>
+    <script src="@routes.Assets.at("scripts/profileCtrl.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("scripts/socketUtil.js")"></script>
     <script src="@routes.Assets.at("scripts/gameCtrl.js")"></script>
 }

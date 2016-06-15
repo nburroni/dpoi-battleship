@@ -1,5 +1,5 @@
 .game {
-  $td-width: 9vw;
+  $td-width: 5.85vw;
   $td-height: 2.5vw;
   #shooting-board{
     td:hover{
@@ -36,6 +36,7 @@
   .ships-container{
     img{
       height: $td-height;
+      display: block;
     }
   }
   .floating-img{
@@ -81,5 +82,11 @@
     height: 2vw;
     width: 2vw;
     z-index: 1;
+  }
+
+  #waiting-modal {
+    .modal-content {
+      padding: 20px 0;
+    }
   }
 }

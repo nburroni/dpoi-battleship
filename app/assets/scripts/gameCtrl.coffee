@@ -11,8 +11,10 @@ angular.module 'app'
     $scope.myFires = []
     $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1},{src: "assets/images/ships/ship-1.png", width: 3, id: 1, height: 1}]
     $scope.myBoard = []
+    $scope.searching = false
 
     $scope.shipsPlaced = ->
+      $('#waiting-modal').modal('show')
       sendableShips = []
       for i in [0..9]
         for j in [0..9]
@@ -47,12 +49,15 @@ angular.module 'app'
     socket = window.socketUtil
 
     socket.onmessage (data) -> $scope.handleMessage(data)
-    socket.connect()
+    $scope.searchGame = ->
+      $scope.searching = true
+      socket.connect()
     socket.onopen ->
       socket.send {action: "search-game"}
     $scope.handleMessage = (response) ->
       switch response.msg
         when "matched-player"
+          $scope.searching = false
           $scope.startGame = true
           $scope.placeShips = true
         when "searching-game"
@@ -80,6 +85,7 @@ angular.module 'app'
           $scope.myTurn = false
         when "game-ready"
           $scope.placeShips = false
+          $('#waiting-modal').modal('hide')
         else
           console.log("unknown message")
       $scope.$apply()

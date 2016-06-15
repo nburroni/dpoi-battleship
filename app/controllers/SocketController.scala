@@ -16,47 +16,58 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   import Messages._
 
   implicit val fireAction = Json.format[Fire]
+  implicit val coordsAction = Json.format[Coords]
+  implicit val placementAction = Json.format[ShipPlacement]
 
+  implicit val inEventFormat = Json.format[ActionIn]
+  implicit val outEventFormat = Json.format[ActionOut]
 
-  implicit val inEventFormat = Json.format[InEvent]
-  implicit val outEventFormat = Json.format[OutEvent]
+  implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[ActionIn, ActionOut]
 
-  implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
-
-  class MyWebSocketActor(out: ActorRef) extends Actor {
-    var game: Option[ActorRef] = None
+  class PlayerActor(out: ActorRef) extends Actor {
+    var gameOption: Option[ActorRef] = None
 
     def receive = {
-      case e: InEvent => e toMessage match {
+      case e: ActionIn => e toMessage match {
         case SearchGame => GameManager addPlayer self
-        case f: Fire => game.foreach(_ ! f)
+        case f: Fire => gameOption foreach (_ ! f)
+        case p: PlacedShips => gameOption foreach (_ ! p)
       }
 
       case MatchGame(gameActor) =>
-        this.game = Some(gameActor)
-        out ! OutEvent("matched-player")
+        this.gameOption = Some(gameActor)
+        out ! ActionOut("matched-player")
+
+      case GameReady =>
+        out ! ActionOut("game-ready")
 
       case MissedShot(x, y) =>
-        out ! OutEvent("miss", Some(Fire(x, y)))
+        out ! ActionOut("miss", Some(Fire(x, y)))
 
       case OpponentMissed(x, y) =>
-        out ! OutEvent("miss-received", Some(Fire(x, y)))
+        out ! ActionOut("miss-received", Some(Fire(x, y)))
+
+      case HitShot(x, y) =>
+        out ! ActionOut("hit", Some(Fire(x, y)))
+
+      case OpponentHit(x, y) =>
+        out ! ActionOut("hit-received", Some(Fire(x, y)))
 
       case YourTurn =>
-        out ! OutEvent("my-turn")
+        out ! ActionOut("my-turn")
 
       case OpponentTurn =>
-        out ! OutEvent("their-turn")
+        out ! ActionOut("their-turn")
 
     }
   }
 
-  object MyWebSocketActor {
-    def props(out: ActorRef) = Props(new MyWebSocketActor(out))
+  object PlayerActor {
+    def props(out: ActorRef) = Props(new PlayerActor(out))
   }
 
-  def socket = WebSocket.accept[InEvent, OutEvent] { request =>
-    ActorFlow.actorRef(out => MyWebSocketActor.props(out))
+  def socket = WebSocket.accept[ActionIn, ActionOut] { request =>
+    ActorFlow.actorRef(out => PlayerActor.props(out))
   }
 
   def socketUrl = Action { request =>

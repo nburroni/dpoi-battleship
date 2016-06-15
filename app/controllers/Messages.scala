@@ -7,17 +7,17 @@ import akka.actor.ActorRef
   */
 object Messages {
 
-  case class InEvent(action: String, fire: Option[Fire] = None) {
+  case class ActionIn(action: String, fire: Option[Fire] = None, ships: Option[List[ShipPlacement]]) {
     def toMessage: Message = {
       action match {
         case "search-game" => SearchGame
         case "fire" => fire.getOrElse(InvalidAction("invalid-fire"))
-        //        case "fire-to" => FireTo(userKey, fire.get)
+        case "placed-ships" => PlacedShips(ships.getOrElse(List()))
       }
     }
   }
 
-  case class OutEvent(msg: String, fire: Option[Fire] = None)
+  case class ActionOut(msg: String, fire: Option[Fire] = None)
 
   trait Message
 
@@ -32,8 +32,21 @@ object Messages {
   case class Fire(x: Int, y: Int) extends Message
 
   case class MissedShot(x: Int, y: Int) extends Message
+  case class HitShot(x: Int, y: Int) extends Message
 
   case class OpponentMissed(x: Int, y: Int) extends Message
+  case class OpponentHit(x: Int, y: Int) extends Message
+
+  case class PlacedShips(placements: List[ShipPlacement]) extends Message
+
+  case object GameReady extends Message
+
+  case class ShipPlacement(start: Coords, end: Coords) {
+    def contains(coords: Coords) = {
+      (start.x <= coords.x && coords.x <= end.x) && (start.y <= coords.y && coords.y <= end.y)
+    }
+  }
+  case class Coords(x: Int, y: Int)
 
   case object YourTurn extends Message
 

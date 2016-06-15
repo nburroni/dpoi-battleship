@@ -1,6 +1,7 @@
 angular.module 'app'
 .controller 'GameController', ['$scope', '$http',
   ($scope, $http) ->
+
     $scope.startGame = false
     $scope.placeShips = false
     $scope.letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
@@ -10,8 +11,8 @@ angular.module 'app'
     $scope.myFires = []
     $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0},{src: "assets/images/ships/ship-1.png", width: 3, id: 1}]
     $scope.myBoard = []
+
     $scope.shipsPlaced = ->
-      $scope.placeShips = false
       sendableShips = []
       for i in [0..9]
         for j in [0..9]
@@ -21,12 +22,15 @@ angular.module 'app'
             sendableShips.push {start: {x: shp.x, y: shp.y}, end: {x: shp.endX, y: shp.endY}}
       console.log sendableShips
       socket.send {action: "placed-ships", ships: sendableShips}
+
     $scope.initBoard = ->
       for nico in [0..9]
         $scope.myBoard[nico] = []
         for lucho in [0..9]
           $scope.myBoard[nico][lucho] = {img:[], busy: false}
+
     $scope.initBoard()
+
     $scope.selectPosition = (x, y) ->
       if $scope.selected
         $("#opp-"+$scope.selected.y+''+$scope.selected.x).removeClass("selected-target")
@@ -36,6 +40,7 @@ angular.module 'app'
       }
       $("#opp-"+y+''+x).addClass("selected-target")
       return
+
     $scope.fire = ->
       $scope.myFires.push($scope.selected)
       socket.send {action: "fire", fire: $scope.selected}
@@ -73,9 +78,12 @@ angular.module 'app'
           $scope.myTurn = true
         when "their-turn"
           $scope.myTurn = false
+        when "game-ready"
+          $scope.placeShips = false
         else
           console.log("unknown message")
       $scope.$apply()
+
     $scope.getRelatives = (ship, id)->
       rels = []
       for idx in [1..(ship.width-1)]
@@ -83,6 +91,7 @@ angular.module 'app'
         rel = document.getElementById(newid + (parseInt(id.charAt(id.length-1))+idx))
         if rel then rels.push rel
       rels
+
     $scope.checkRelatives = (ship, id) ->
       y = parseInt id.substr 0, id.length-1
       x = parseInt id.substr id.length - 1, id.length
@@ -110,7 +119,7 @@ angular.module 'app'
           $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
           for i in [0..data.width-1]
             $scope.myBoard[parseInt(id.charAt(1))+i][parseInt(id.charAt(0))].busy = true
-          data.endX = i
+          data.endX = data.x + data.width - 1
           data.endY = data.y
           relatives.forEach((cell) -> cell.style.opacity = 0)
         else
@@ -125,7 +134,7 @@ angular.module 'app'
           $scope.myBoard[parseInt(id.charAt(1))][parseInt(id.charAt(0))].img = [data]
           for j in [0..data.width-1]
             $scope.myBoard[parseInt(id.charAt(1))+j][parseInt(id.charAt(0))].busy = true
-          data.endX = j
+          data.endX = data.x + data.width - 1
           data.endY = data.y
           relatives.forEach((cell) -> cell.style.opacity = 0)
       else

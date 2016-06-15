@@ -8,9 +8,9 @@ import controllers.Messages._
   */
 class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
 
-  var players: Map[ActorRef, Boolean] = Map(
-    playerOne -> true,
-    playerTwo -> false
+  var players: Map[ActorRef, PlayerData] = Map (
+    playerOne -> new PlayerData(turn = true),
+    playerTwo -> new PlayerData(turn = false)
   )
 
   playerOne ! MatchGame(self)
@@ -19,10 +19,12 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
   playerOne ! YourTurn
   playerTwo ! OpponentTurn
 
-  def switchTurn(currentPlayer: ActorRef, rival: ActorRef) = {
-    players = Map(
-      currentPlayer -> false,
-      rival -> true
+  def switchTurn(currentPlayer: ActorRef, playerData: PlayerData, rival: ActorRef, rivalData: PlayerData) = {
+    playerData.hasTurn = false
+    rivalData.hasTurn = true
+    players = Map (
+      currentPlayer -> playerData,
+      rival -> rivalData
     )
     currentPlayer ! OpponentTurn
     rival ! YourTurn
@@ -30,13 +32,46 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
 
   override def receive = {
     case Fire(x, y) =>
+      val fireCoords: Coords = Coords(x, y)
       val currentPlayer: ActorRef = sender
-      val rival: ActorRef = (players - currentPlayer).head._1
-      if (players.getOrElse(currentPlayer, false)) {
+      val playerData = players.getOrElse(currentPlayer, new PlayerData())
+      val rival: ActorRef = otherPlayer(currentPlayer)
+      val rivalData = otherPlayerData(currentPlayer)
+      if (players.get(currentPlayer).fold(false)(_.hasTurn)) {
         // TODO check if missed or hit
-        currentPlayer ! MissedShot(x, y)
-        rival ! OpponentMissed(x, y)
-        switchTurn(currentPlayer, rival)
+        val hit: Boolean = rivalData.shipsOption.fold(false) {
+          case placements: List[ShipPlacement] =>
+            placements.map(_.contains(fireCoords)).fold(false)(_ || _)
+        }
+        if (hit) {
+          currentPlayer ! HitShot(x, y)
+          rival ! OpponentHit(x, y)
+        } else {
+          currentPlayer ! MissedShot(x, y)
+          rival ! OpponentMissed(x, y)
+        }
+        rivalData.gridOption = rivalData.gridOption.map(_ + (fireCoords -> true))
+        switchTurn(currentPlayer, playerData, rival, rivalData)
       }
+
+    case PlacedShips(placements) =>
+      players.get(sender).fold() { data =>
+        data.shipsOption = Some(placements)
+        data.gridOption = Some(Map())
+      }
+      if (otherPlayerData(sender).shipsOption.isDefined) emit(GameReady)
+
   }
+
+  def emit(msg: Message) = players foreach (_._1 ! msg)
+
+  def otherPlayer(currentPlayer: ActorRef): ActorRef = (players - currentPlayer).head._1
+  def otherPlayerData(currentPlayer: ActorRef): PlayerData = (players - currentPlayer).head._2
+
+  case class PlayerData(turn: Boolean = false) {
+    var hasTurn = turn
+    var gridOption: Option[Map[Coords, Boolean]] = None
+    var shipsOption: Option[List[ShipPlacement]] = None
+  }
+
 }

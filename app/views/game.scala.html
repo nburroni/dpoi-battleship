@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="card-block text-xs-center col" ng-show="!startGame && searching">
+                <div class="card-block text-xs-center col" ng-show="!startGame && searching" ng-cloak>
                     <div class="card-title">Searching for other player</div>
                     <div class="card-text">
                         <i class="fa fa-spinner fa-spin fa-5x"></i>
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="placeShips" class="container-fluid">
+        <div ng-show="placeShips" class="container-fluid" ng-cloak>
             <div class="row">
                 <div class="col-sm-8">
                     <h1>Please, place your ships.</h1>
@@ -115,7 +115,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="startGame && !placeShips" class="container-fluid">
+        <div ng-show="startGame && !placeShips" class="container-fluid" ng-cloak>
             <div class="row">
                 <div class="col-xs-12 text-xs-center">
                     <h2>{{ myTurn ? "Your" : "Opponent's" }} turn</h2>

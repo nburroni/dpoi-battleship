@@ -12,6 +12,7 @@ angular.module 'app'
 
     $scope.fetchLoggedUser = ->
       FB.getLoginStatus (response) ->
+#        window.location.href = '/' if response.status != 'connected'
         FB.api '/me', (user) ->
           $scope.user = { name: user.name, id: user.id }
           FB.api "/#{user.id}/picture", (response) ->

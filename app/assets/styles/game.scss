@@ -31,6 +31,13 @@
       height: $td-height;
       width: $td-width;
       position: relative;
+
+      img.icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
   }
   .ships-container{

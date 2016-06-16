@@ -9,8 +9,8 @@ angular.module 'app'
     $scope.selected = null
     $scope.opponentFires = []
     $scope.myFires = []
-#    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1},{src: "assets/images/ships/ship-1.png", width: 3, id: 1, height: 1}, {src: "assets/images/ships/ship-1.png", width: 3, id: 2, height: 1}, {src: "assets/images/ships/ship-1.png", width: 4, id: 3, height: 1}, {src: "assets/images/ships/ship-1.png", width: 5, id: 4, height: 1}]
-    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1}]
+    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1},{src: "assets/images/ships/ship-1.png", width: 3, id: 1, height: 1}, {src: "assets/images/ships/ship-1.png", width: 3, id: 2, height: 1}, {src: "assets/images/ships/ship-1.png", width: 4, id: 3, height: 1}, {src: "assets/images/ships/ship-1.png", width: 5, id: 4, height: 1}]
+#    $scope.currentShips = [{src: "assets/images/ships/ship-1.png", width: 2, id: 0, height: 1}]
     $scope.myBoard = []
     $scope.fireMessage = {}
 #    $scope.hitMessage = {message: "HIT", icon: "fa fa-dot-circle-o"}
@@ -21,6 +21,12 @@ angular.module 'app'
     $scope.missMessage = {message: "MISS", gif: "assets/images/water.gif"}
     $scope.searching = false
     $scope.result = {show: false, message:""}
+    $scope.hitImg = {src: "assets/images/fire.png"}
+    $scope.missImg = {src: "assets/images/water.png"}
+    $scope.hits = 0
+    $scope.misses = 0
+    $scope.oHits = 0
+    $scope.oMisses = 0
     $scope.shipsPlaced = ->
       $('#waiting-modal').modal('show')
       sendableShips = []
@@ -32,11 +38,12 @@ angular.module 'app'
             if shp.width == 1
               lives = shp.height
               relatives = $scope.getVRelatives(shp, 'my-'+ shp.y + shp.x)
-              relatives.forEach((cell) -> cell.style.opacity = 0)
+              document.getElementById("my-")
+#              relatives.forEach((cell) -> cell.style.opacity = 0)
             else
               lives = shp.width
               relatives = $scope.getHRelatives(shp, 'my-'+ shp.y + shp.x)
-              relatives.forEach((cell) -> cell.style.opacity = 0)
+#              relatives.forEach((cell) -> cell.style.opacity = 0)
             sendableShips.push {start: {x: shp.x, y: shp.y}, end: {x: shp.endX, y: shp.endY}, lives: lives}
 
       console.log sendableShips
@@ -48,7 +55,7 @@ angular.module 'app'
       for nico in [0..9]
         $scope.myBoard[nico] = []
         for lucho in [0..9]
-          $scope.myBoard[nico][lucho] = {img:[], busy: false}
+          $scope.myBoard[nico][lucho] = {img:[], busy: false, feedback: []}
 
     $scope.initBoard()
 
@@ -83,31 +90,38 @@ angular.module 'app'
           $scope.startGame = false
           $scope.placeShips = false
         when "hit-received"
+          $scope.oHits++
           $scope.opponentFires.push(response.fire)
           $("#my-"+response.fire.y+''+response.fire.x).addClass("hit-target")
+          $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.hitImg]
           $scope.fireMessage = $scope.hitMessage
           $('#fire-modal').modal('toggle')
           setTimeout(->
             $('#fire-modal').modal('hide')
           , 2000)
         when "sunk-received"
+          $scope.oHits++
           $scope.opponentFires.push(response.fire)
           $("#my-"+response.fire.y+''+response.fire.x).addClass("hit-target")
+          $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.hitImg]
           $scope.fireMessage = $scope.sinkMessage
           $('#fire-modal').modal('toggle')
           setTimeout(->
             $('#fire-modal').modal('hide')
-          , 3000)
+          , 5500)
 
         when "miss-received"
+          $scope.oMisses++
           $scope.opponentFires.push(response.fire)
           $("#my-"+response.fire.y+''+response.fire.x).addClass("miss-target")
+          $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.missImg]
           $scope.fireMessage = $scope.missMessage
           $('#fire-modal').modal('toggle')
           setTimeout(->
             $('#fire-modal').modal('hide')
           , 2000)
         when "hit"
+          $scope.hits++
           $scope.selected = null
           $scope.myFires.push(response.fire)
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
@@ -118,6 +132,7 @@ angular.module 'app'
             $('#fire-modal').modal('hide')
           , 2000)
         when "miss"
+          $scope.misses++
           $scope.selected = null
           $scope.myFires.push(response.fire)
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
@@ -135,6 +150,7 @@ angular.module 'app'
           $scope.placeShips = false
           $('#waiting-modal').modal('hide')
         when "sunk-ship"
+          $scope.hits++
           $scope.selected = null
           $scope.myFires.push(response.fire)
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
@@ -143,21 +159,21 @@ angular.module 'app'
           $('#fire-modal').modal('toggle')
           setTimeout(->
             $('#fire-modal').modal('hide')
-          , 3000)
+          , 5500)
         when "won-match"
           response.msg = "sunk-ship"
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You won :) !"}
             $scope.$apply()
-          ,3100)
+          ,5600)
         when "lost-match"
           response.msg = "sunk-received"
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You lost :'( !"}
             $scope.$apply()
-          ,3100)
+          ,5600)
         else
           console.log("unknown message")
       $scope.$apply()

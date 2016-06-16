@@ -43,10 +43,8 @@
                     </div>
                     <div class="modal-body centered-text">
                         <h3>{{fireMessage.message}}</h3>
-                        <i class="{{fireMessage.icon}} fa-3x"></i>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        @*<i class="{{fireMessage.icon}} fa-3x"></i>*@
+                        <img ng-src="{{fireMessage.gif}}" alt="gif">
                     </div>
                 </div>
             </div>
@@ -115,7 +113,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="startGame && !placeShips" class="container-fluid" ng-cloak>
+        <div ng-show="startGame && !placeShips && !result.show" class="container-fluid" ng-cloak>
             <div class="row">
                 <div class="col-xs-12 text-xs-center">
                     <h2>{{ myTurn ? "Your" : "Opponent's" }} turn</h2>
@@ -123,10 +121,10 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-xl-6 text-xs-center">
-                    <h3>Your board</h3>
+                    <h3>Opponent's board</h3>
                 </div>
                 <div class="col-xl-6 text-xs-center hidden-lg-down">
-                    <h3>Opponent's board</h3>
+                    <h3>Your board</h3>
                 </div>
                 <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
@@ -170,7 +168,7 @@
                     <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
                 </div>
                 <div class="col-xs-12 col-xl-6 text-xs-center hidden-xl-up">
-                    <h3>Opponent's board</h3>
+                    <h3>Your board</h3>
                 </div>
                 <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="my-board">
@@ -209,12 +207,24 @@
                                 <th>{{letter}}</th>
                                 <td ng-repeat="number in numbers" id="{{'my-' + $parent.$index + '' + number}}"><i class="fa fa-circle"></i>
                                     <img ng-src="{{ship.src}}" alt="nada" ng-repeat="ship in myBoard[number][letterIndex].img" class="floating-img" ng-class="{'height1': ship.height == 1, 'height2': ship.height == 2, 'height3': ship.height == 3, 'height4': ship.height == 4, 'height5': ship.height == 5, 'width1': ship.width == 1, 'width2': ship.width == 2, 'width3': ship.width == 3, 'width4': ship.width == 4, 'width5': ship.width == 5}">
+                                    <img ng-src="{{feedback.src}}" ng-repeat="feedback in myBoard[number][letterIndex].feedback" alt="feed" class="icon">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
+        <div ng-show="result.show" class="text-xs-center">
+            <h1>{{result.message}}</h1>
+            <h2>Your Stats:</h2>
+            <h3>Hits: {{hits}} - Misses: {{misses}}</h3>
+            <h3>Efficiency: {{((hits*100)/(hits+misses))}}%</h3>
+            <h2>Opponent's Stats:</h2>
+            <h3>Hits: {{oHits}} - Misses: {{oMisses}}</h3>
+            <h3>Efficiency: {{((oHits*100)/(oHits+oMisses))}}%</h3>
+
+            <button class="btn btn-lg btn-primary play-btn" onclick="window.location.href = '/game'">Home</button>
         </div>
     </div>
 } {

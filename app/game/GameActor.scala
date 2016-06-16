@@ -48,7 +48,6 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
                 case (placement, sunk) =>
                   if (!sunk.isSunk && placement.contains(fireCoords)) {
                     placement.alterLives -= 1
-                    println(placement.alterLives)
                     if (placement.alterLives == 0) {
                       sunk.isSunk = true
                       sunken = true

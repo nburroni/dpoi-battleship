@@ -1,6 +1,7 @@
 package controllers
 
 import akka.actor.ActorRef
+import game.{ReconnectData, PlayerData}
 
 /**
   * Created by nico on 08/06/16.
@@ -13,11 +14,21 @@ object Messages {
         case "search-game" => SearchGame
         case "fire" => fire.getOrElse(InvalidAction("invalid-fire"))
         case "placed-ships" => PlacedShips(ships.getOrElse(List()))
+        case "save-player" => SavePlayer
+        case "reconnect" => TryReconnect
       }
     }
   }
 
-  case class ActionOut(msg: String, fire: Option[Fire] = None)
+  case class Reconnect(update: ActorRef, prev: ActorRef, prevId: String) extends Message
+
+  case object SavePlayer extends Message
+
+  case object TryReconnect extends Message
+
+  case class ActionOut(msg: String, fire: Option[Fire] = None, data: Option[ReconnectData] = None)
+
+//  case class ReconnectData(msg: String, hasTurn: Boolean, gridOption: List[Coords], shipsOption: Map[ShipPlacement, Sunk]) extends Message
 
   trait Message
 
@@ -27,7 +38,11 @@ object Messages {
 
   case class MatchGame(gameActor: ActorRef) extends Message
 
+  case class Reconnected(gameActor: ActorRef, data: PlayerData, rivalData: PlayerData) extends Message
+
   case object SearchGame extends Message
+
+  case object NotReconnected extends Message
 
   case class Fire(x: Int, y: Int) extends Message
 

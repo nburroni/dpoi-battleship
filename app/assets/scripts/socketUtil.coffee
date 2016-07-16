@@ -18,3 +18,5 @@ window.socketUtil =
       socketInfo.socket.onmessage = callbackWrapper
 
   send: (data) -> socketInfo.socket.send JSON.stringify(data)
+  onclose: (callback) ->
+    socketInfo.onclose = callback

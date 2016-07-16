@@ -57,7 +57,7 @@ angular.module 'app'
         for lucho in [0..9]
           $scope.myBoard[nico][lucho] = {img:[], busy: false, feedback: []}
 
-    $scope.initBoard()
+    if $scope.myBoard.length == 0 then $scope.initBoard()
 
     $scope.selectPosition = (x, y) ->
       if $scope.selected
@@ -77,11 +77,54 @@ angular.module 'app'
     socket.onmessage (data) -> $scope.handleMessage(data)
     $scope.searchGame = ->
       $scope.searching = true
-      socket.connect()
-    socket.onopen ->
       socket.send {action: "search-game"}
+    socket.onopen ->
+      socket.send {action: "reconnect"}
+      $('#loading-modal').modal('toggle')
+    socket.connect()
+    showModal = true
+    window.onbeforeunload = () ->
+      socket.send {action: "save-player"}
+    getShipLength = (ship) ->
+      if ship.start.x != ship.end.x then return {length: ship.end.x - ship.start.x + 1, or: 'h'} else return {length: ship.end.y - ship.start.y + 1, or: 'v'}
     $scope.handleMessage = (response) ->
       switch response.msg
+        when "reconnected"
+          $('#loading-modal').modal('hide')
+          console.log(response)
+          newData = response.data
+          $scope.myTurn = newData.turn
+          showModal = false
+          currId = 0
+          if $scope.myBoard.length == 0 then $scope.initBoard()
+          for ship in newData.ships
+            shipInfo = getShipLength(ship)
+            if shipInfo.or == 'h'
+              $scope.myBoard[ship.start.x][ship.start.y].img.push {src: "assets/images/ships/ship-1.png", width: shipInfo.length, id: currId, height: 1}
+              for i in [ship.start.x..ship.end.x]
+                $scope.myBoard[i][ship.start.y].busy = true
+            else
+              $scope.myBoard[ship.start.x][ship.start.y].img.push {src: "assets/images/ships/ship-r-1.png", width: 1, id: currId, height: shipInfo.length}
+              for j in [ship.start.y..ship.end.y]
+                $scope.myBoard[ship.start.x][j].busy = true
+            currId++
+          for fire in newData.myFires
+            if fire.hit
+              $scope.handleMessage {msg: "hit", fire: fire.coords}
+            else
+              $scope.handleMessage {msg: "miss", fire: fire.coords}
+          for oppFire in newData.oppFires
+            if oppFire.hit
+              $scope.handleMessage {msg: "hit-received", fire: oppFire.coords}
+            else
+              $scope.handleMessage {msg: "miss-received", fire: oppFire.coords}
+          $scope.currentShips = []
+          $scope.searching = false
+          $scope.selected = null
+          $scope.placeShips = false
+          $scope.startGame = true
+          showModal = true
+        when "not-reconnected" then $('#loading-modal').modal('hide')
         when "matched-player"
           $scope.searching = false
           $scope.startGame = true
@@ -95,10 +138,11 @@ angular.module 'app'
           $("#my-"+response.fire.y+''+response.fire.x).addClass("hit-target")
           $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.hitImg]
           $scope.fireMessage = $scope.hitMessage
-          $('#fire-modal').modal('toggle')
-          setTimeout(->
-            $('#fire-modal').modal('hide')
-          , 2000)
+          if showModal
+            $('#fire-modal').modal('toggle')
+            setTimeout(->
+              $('#fire-modal').modal('hide')
+            , 2000)
         when "sunk-received"
           $scope.oHits++
           $scope.opponentFires.push(response.fire)
@@ -116,10 +160,11 @@ angular.module 'app'
           $("#my-"+response.fire.y+''+response.fire.x).addClass("miss-target")
           $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.missImg]
           $scope.fireMessage = $scope.missMessage
-          $('#fire-modal').modal('toggle')
-          setTimeout(->
-            $('#fire-modal').modal('hide')
-          , 2000)
+          if showModal
+            $('#fire-modal').modal('toggle')
+            setTimeout(->
+              $('#fire-modal').modal('hide')
+            , 2000)
         when "hit"
           $scope.hits++
           $scope.selected = null
@@ -127,10 +172,11 @@ angular.module 'app'
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("hit-target")
           $scope.fireMessage = $scope.hitMessage
-          $('#fire-modal').modal('toggle')
-          setTimeout(->
-            $('#fire-modal').modal('hide')
-          , 2000)
+          if showModal
+            $('#fire-modal').modal('toggle')
+            setTimeout(->
+              $('#fire-modal').modal('hide')
+            , 2000)
         when "miss"
           $scope.misses++
           $scope.selected = null
@@ -138,10 +184,11 @@ angular.module 'app'
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("miss-target")
           $scope.fireMessage = $scope.missMessage
-          $('#fire-modal').modal('toggle')
-          setTimeout(->
-            $('#fire-modal').modal('hide')
-          , 2000)
+          if showModal
+            $('#fire-modal').modal('toggle')
+            setTimeout(->
+              $('#fire-modal').modal('hide')
+            , 2000)
         when "my-turn"
           $scope.myTurn = true
         when "their-turn"

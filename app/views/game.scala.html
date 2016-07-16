@@ -5,7 +5,7 @@
         <div class="battleship-bg"></div>
         <div >
             <nav class="navbar navbar-full navbar-light bg-faded">
-                <a class="navbar-brand" href="#"><span class="octicon octicon-zap"></span>  Corazzata</a>
+                <a class="navbar-brand" href="/game"><span class="octicon octicon-zap"></span>  Corazzata</a>
                 <div class="pull-xs-right fb-data" ng-cloak><span>
                     {{ user.name }}</span><img ng-src="{{ user.imageSrc }}" class="img-circle"></div>
             </nav>
@@ -45,6 +45,16 @@
                         <h3>{{fireMessage.message}}</h3>
                         @*<i class="{{fireMessage.icon}} fa-3x"></i>*@
                         <img ng-src="{{fireMessage.gif}}" alt="gif">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="loading-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body centered-text">
+                        <h2>Loading. Please wait...</h2>
+                        <h2><i class="fa fa-spinner fa-spin"></i></h2>
                     </div>
                 </div>
             </div>
@@ -215,7 +225,7 @@
                 </div>
             </div>
         </div>
-        <div ng-show="result.show" class="text-xs-center">
+        <div ng-show="result.show" class="text-xs-center" ng-cloak>
             <h1>{{result.message}}</h1>
             <h2>Your Stats:</h2>
             <h3>Hits: {{hits}} - Misses: {{misses}}</h3>

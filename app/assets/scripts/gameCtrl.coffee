@@ -28,6 +28,8 @@ angular.module 'app'
     $scope.oHits = 0
     $scope.oMisses = 0
     $scope.startedTime = 0
+    $scope.rival = {}
+
     window.testStatistics = ->
       socket.send {action: "save-data", matchData:{
         won: true
@@ -138,6 +140,13 @@ angular.module 'app'
           $scope.startGame = true
           $scope.placeShips = true
           $scope.startedTime = new Date().getTime()
+          response.oppId = -1 if !response.oppId
+          FB.api "/#{response.oppId}/picture", (response) ->
+            if response && !response.error
+              $scope.rival.imageSrc = response.data.url
+              $scope.$apply()
+          $http.get "/user/#{response.oppId}/name"
+            .success (response) -> $scope.rival.name = response
         when "searching-game"
           $scope.startGame = false
           $scope.placeShips = false

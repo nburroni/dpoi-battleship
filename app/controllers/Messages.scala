@@ -27,7 +27,7 @@ object Messages {
 
   case object TryReconnect extends Message
 
-  case class ActionOut(msg: String, fire: Option[Fire] = None, data: Option[ReconnectData] = None)
+  case class ActionOut(msg: String, fire: Option[Fire] = None, data: Option[ReconnectData] = None, oppId: Option[String] = None)
 
 //  case class ReconnectData(msg: String, hasTurn: Boolean, gridOption: List[Coords], shipsOption: Map[ShipPlacement, Sunk]) extends Message
 
@@ -37,7 +37,7 @@ object Messages {
 
   case class MatchPlayer(actor: ActorRef) extends Message
 
-  case class MatchGame(gameActor: ActorRef) extends Message
+  case class MatchGame(gameActor: ActorRef, id: String) extends Message
 
   case class Reconnected(gameActor: ActorRef, data: PlayerData, rivalData: PlayerData) extends Message
 

@@ -69,8 +69,11 @@
         </div>
         <div ng-show="placeShips" class="container-fluid" ng-cloak>
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-4">
                     <h1>Please, place your ships.</h1>
+                </div>
+                <div class="col-sm-4" ng-cloak>
+                    Playing against: {{ rival.name }} <img ng-src="{{ rival.imageSrc }}" class="img-circle">
                 </div>
                 <div class="col-sm-4">
                     <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">I'm Done!</a>

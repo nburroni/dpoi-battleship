@@ -1,24 +1,24 @@
 package game
 
 import akka.actor.{Actor, ActorRef}
-import controllers.FireMap
+import controllers.{PlayerActor, FireMap}
 import controllers.Messages._
 
 /**
   * Created by nico on 08/06/16.
   */
-class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
+class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
 
   var players: Map[ActorRef, PlayerData] = Map (
-    playerOne -> new PlayerData(turn = true),
-    playerTwo -> new PlayerData(turn = false)
+    playerOne.self -> new PlayerData(turn = true),
+    playerTwo.self -> new PlayerData(turn = false)
   )
 
-  playerOne ! MatchGame(self)
-  playerTwo ! MatchGame(self)
+  playerOne.self ! MatchGame(self, playerTwo.id)
+  playerTwo.self ! MatchGame(self, playerOne.id)
 
-  playerOne ! YourTurn
-  playerTwo ! OpponentTurn
+  playerOne.self ! YourTurn
+  playerTwo.self ! OpponentTurn
 
   def switchTurn(currentPlayer: ActorRef, playerData: PlayerData, rival: ActorRef, rivalData: PlayerData) = {
     playerData.hasTurn = false
@@ -89,6 +89,7 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
         data.gridOption = Some(List())
       }
       if (otherPlayerData(sender).shipsOption.isDefined) emit(GameReady)
+
     case Reconnect(newP, prevP, prevId) =>
       players = players + (newP -> players(prevP))
       players = players - prevP

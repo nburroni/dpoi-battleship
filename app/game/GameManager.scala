@@ -7,6 +7,7 @@ package game
 import akka.actor.{ActorSystem, Props, ActorRef}
 import com.mongodb.client.result.UpdateResult
 import controllers.Messages.{MatchData, NotReconnected, Reconnect}
+import controllers.PlayerActor
 import org.mongodb.scala.bson._
 import org.mongodb.scala.{Completed, Document}
 import play.api._
@@ -56,7 +57,7 @@ object GameManager extends GlobalSettings {
   }
 
   private var reconnectPlayers: Map[String, (ActorRef, ActorRef)] = Map()
-  private var pendingPlayers = Queue[ActorRef]()
+  private var pendingPlayers = Queue[PlayerActor]()
 
 
   def setReconnect(_id: String, player: ActorRef, game: ActorRef) = {
@@ -65,10 +66,10 @@ object GameManager extends GlobalSettings {
     }
   }
 
-  def addPlayer(player: ActorRef) = {
+  def addPlayer(player: PlayerActor) = {
     getFirstPendingPlayer match {
       case Some(rival) =>
-        if (rival == player) {
+        if (rival.id == player.id) {
           pendingPlayers = pendingPlayers enqueue player
         } else {
           val props: Props = Props(new GameActor(rival, player))
@@ -79,7 +80,7 @@ object GameManager extends GlobalSettings {
     }
   }
 
-  def getFirstPendingPlayer: Option[ActorRef] = {
+  def getFirstPendingPlayer: Option[PlayerActor] = {
     if (pendingPlayers.isEmpty) None
     else {
       pendingPlayers.dequeue match {

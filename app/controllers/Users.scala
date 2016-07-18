@@ -1,11 +1,12 @@
 package controllers
 
-import controllers.Messages.MatchData
 import org.mongodb.scala.{Completed, Document}
 import org.mongodb.scala.model.Filters._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import util._
+
+import scala.concurrent.Future
 
 case class User(id: String, name: String)
 
@@ -47,5 +48,15 @@ class Users extends Controller {
 
   def profileView() = Action {
     Ok(views.html.profile())
+  }
+
+  def userName(id: String) = Action.async {
+    import scala.concurrent.ExecutionContext.Implicits.global
+    MongoUtil("battleship").getDB.getCollection("users").find(equal("_id", id)).toFuture().map {
+      case Seq(doc) => doc.get("name") match {
+        case None => NotFound
+        case Some(name) => Ok(name.asString.getValue)
+      }
+    }
   }
 }

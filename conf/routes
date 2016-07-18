@@ -12,6 +12,7 @@ GET     /socket/url                 controllers.SocketController.socketUrl
 GET     /socket/connect             controllers.SocketController.socket
 
 GET     /profile                    controllers.Users.profileView
+GET     /user/:id/name              controllers.Users.userName(id)
 
 # Action triggered after fb login
 POST    /fb-login                   controllers.Users.logUser

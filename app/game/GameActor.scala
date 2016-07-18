@@ -1,6 +1,7 @@
 package game
 
 import akka.actor.{Actor, ActorRef}
+import controllers.FireMap
 import controllers.Messages._
 
 /**
@@ -88,7 +89,13 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
         data.gridOption = Some(List())
       }
       if (otherPlayerData(sender).shipsOption.isDefined) emit(GameReady)
-
+    case Reconnect(newP, prevP, prevId) =>
+      players = players + (newP -> players(prevP))
+      players = players - prevP
+      val data = players(newP)
+      val rivalData = otherPlayerData(newP)
+      GameManager successfulReconnection prevId
+      newP ! Reconnected(self, data, rivalData)
   }
 
   def emit(msg: Message) = players foreach (_._1 ! msg)
@@ -96,11 +103,12 @@ class GameActor(playerOne: ActorRef, playerTwo: ActorRef) extends Actor {
   def otherPlayer(currentPlayer: ActorRef): ActorRef = (players - currentPlayer).head._1
   def otherPlayerData(currentPlayer: ActorRef): PlayerData = (players - currentPlayer).head._2
 
-  case class PlayerData(turn: Boolean = false) {
-    var hasTurn = turn
-    var gridOption: Option[List[Coords]] = None
-    var shipsOption: Option[Map[ShipPlacement, Sunk]] = None
-    var mySunkenShips: Int = 0
-  }
-
 }
+case class PlayerData(turn: Boolean = false) {
+  var hasTurn = turn
+  var gridOption: Option[List[Coords]] = None
+  var shipsOption: Option[Map[ShipPlacement, Sunk]] = None
+  var mySunkenShips: Int = 0
+}
+
+case class ReconnectData(turn: Boolean, oppFires: List[FireMap], ships: List[ShipPlacement], myFires: List[FireMap])

@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.Messages.MatchData
 import org.mongodb.scala.{Completed, Document}
 import org.mongodb.scala.model.Filters._
 import play.api.libs.json.{JsValue, Json}
@@ -23,7 +24,12 @@ class Users extends Controller {
           val collection = db.getCollection("users")
           val userDoc = Document(
             "_id" -> user.id,
-            "name" -> user.name
+            "name" -> user.name,
+            "wins" -> 0,
+            "losses" -> 0,
+            "hits" -> 0,
+            "misses" -> 0,
+            "time" -> 0l
           )
           collection.count(equal("_id", user.id)) subscribe { count: Long =>
             if (count == 0l) collection.insertOne(userDoc) subscribe {

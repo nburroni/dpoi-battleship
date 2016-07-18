@@ -23,6 +23,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   implicit val recDataFormat = Json.format[ReconnectData]
   implicit val sunkFormat = Json.format[Sunk]
   implicit val matchFormat = Json.format[MatchData]
+  implicit val dataFormat = Json.format[UserData]
 
   implicit val inEventFormat = Json.format[ActionIn]
   implicit val outEventFormat = Json.format[ActionOut]
@@ -61,6 +62,7 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
         }
       case TryReconnect => GameManager tryReconnect(_id, self)
       case m: MatchData => GameManager saveData(_id, m)
+      case GetStats => GameManager getStats(_id, self)
     }
 
     case NotReconnected =>
@@ -109,7 +111,10 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
 
     case OpponentSunkShip(x, y) =>
       out ! ActionOut("sunk-received", Some(Fire(x, y)))
-  }
+
+    case u: UserData =>
+      out ! ActionOut("stats", stats = Some(u))
+    }
 
   def getFires(data: PlayerData) = {
     val fires = data.gridOption.getOrElse(List()).map{

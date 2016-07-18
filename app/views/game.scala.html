@@ -22,6 +22,41 @@
                         </a>
                     </div>
                 </div>
+                <div class="col-md-8">
+                    <div class="table-responsive" ng-cloak>
+                        <table class="table table-bordered table-striped stats">
+                            <thead>
+                                <tr>
+                                    <th>Matches</th>
+                                    <th>Wins</th>
+                                    <th>Losses</th>
+                                    <th>Ratio</th>
+                                    <th>Hits</th>
+                                    <th>Misses</th>
+                                    <th>Efficacy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{stats.matches}}</td>
+                                    <td>{{stats.wins}}</td>
+                                    <td>{{stats.losses}}</td>
+                                    <td>{{stats.ratio}}%</td>
+                                    <td>{{stats.hits}}</td>
+                                    <td>{{stats.misses}}</td>
+                                    <td>{{stats.efficacy}}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4 col-md-offset-4">
+                    <canvas id="doughnut" class="chart chart-doughnut" chart-data="matchesInfo.data" chart-labels="matchesInfo.labels" chart-options="matchesConfig"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <canvas id="doughnut-2" class="chart chart-doughnut" chart-data="firesInfo.data" chart-labels="firesInfo.labels" chart-options="firesConfig"></canvas>
+                </div>
+
             </div>
             <div class="row">
                 <div class="card-block text-xs-center col" ng-show="!startGame && searching" ng-cloak>

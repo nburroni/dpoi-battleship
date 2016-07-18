@@ -6,7 +6,7 @@ package game
 
 import akka.actor.{ActorSystem, Props, ActorRef}
 import com.mongodb.client.result.UpdateResult
-import controllers.Messages.{MatchData, NotReconnected, Reconnect}
+import controllers.Messages.{UserData, MatchData, NotReconnected, Reconnect}
 import controllers.PlayerActor
 import org.mongodb.scala.bson._
 import org.mongodb.scala.{Completed, Document}
@@ -18,6 +18,23 @@ import scala.collection.immutable.Queue
 
 
 object GameManager extends GlobalSettings {
+
+  def getStats(_id: String, player: ActorRef) = {
+    val mongoUtil = MongoUtil("battleship")
+    val db = mongoUtil.getDB
+    if (db != null) {
+      val collection = db.getCollection("users")
+      collection.find(equal("_id", _id)).first().subscribe{
+        user: Document =>
+          val wins = user.get("wins").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val losses = user.get("losses").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val hits = user.get("hits").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val misses = user.get("misses").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          player ! UserData(wins, losses, hits, misses)
+      }
+    }
+  }
+
   def saveData(_id: String, data: MatchData) = {
     val mongoUtil = MongoUtil("battleship")
     val db = mongoUtil.getDB

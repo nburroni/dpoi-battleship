@@ -8,7 +8,7 @@ import game.{ReconnectData, PlayerData}
   */
 object Messages {
 
-  case class ActionIn(action: String, fire: Option[Fire] = None, ships: Option[List[ShipPlacement]]) {
+  case class ActionIn(action: String, fire: Option[Fire] = None, ships: Option[List[ShipPlacement]] = None, matchData: Option[MatchData] = None) {
     def toMessage: Message = {
       action match {
         case "search-game" => SearchGame
@@ -16,6 +16,7 @@ object Messages {
         case "placed-ships" => PlacedShips(ships.getOrElse(List()))
         case "save-player" => SavePlayer
         case "reconnect" => TryReconnect
+        case "save-data" => matchData.getOrElse(InvalidAction("invalid-data"))
       }
     }
   }
@@ -64,6 +65,8 @@ object Messages {
       (start.x <= coords.x && coords.x <= end.x) && (start.y <= coords.y && coords.y <= end.y)
     }
   }
+
+  case class MatchData(won: Boolean, hits: Int, misses: Int, time: Long) extends Message
 
   case class Sunk(sunk: Boolean){
     var isSunk = sunk

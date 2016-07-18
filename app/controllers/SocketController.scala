@@ -22,6 +22,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   implicit val fireMap = Json.format[FireMap]
   implicit val recDataFormat = Json.format[ReconnectData]
   implicit val sunkFormat = Json.format[Sunk]
+  implicit val matchFormat = Json.format[MatchData]
 
   implicit val inEventFormat = Json.format[ActionIn]
   implicit val outEventFormat = Json.format[ActionOut]
@@ -41,6 +42,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
             GameManager setReconnect(_id, self, act)
           }
         case TryReconnect => GameManager tryReconnect(_id, self)
+        case m: MatchData => GameManager saveData(_id, m)
       }
 
       case NotReconnected =>

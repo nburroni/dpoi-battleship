@@ -27,6 +27,14 @@ angular.module 'app'
     $scope.misses = 0
     $scope.oHits = 0
     $scope.oMisses = 0
+    $scope.startedTime = 0
+    window.testStatistics = ->
+      socket.send {action: "save-data", matchData:{
+        won: true
+        hits: 17
+        misses: 5
+        time: (1000*60*10)
+      }}
     $scope.shipsPlaced = ->
       $('#waiting-modal').modal('show')
       sendableShips = []
@@ -129,6 +137,7 @@ angular.module 'app'
           $scope.searching = false
           $scope.startGame = true
           $scope.placeShips = true
+          $scope.startedTime = new Date().getTime()
         when "searching-game"
           $scope.startGame = false
           $scope.placeShips = false
@@ -212,6 +221,12 @@ angular.module 'app'
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You won :) !"}
+            socket.send {action: "save-data", matchData:{
+              won: true
+              hits: $scope.hits
+              misses: $scope.misses
+              time: new Date().getTime() - $scope.startedTime
+            }}
             $scope.$apply()
           ,5600)
         when "lost-match"
@@ -219,6 +234,7 @@ angular.module 'app'
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You lost :'( !"}
+            socket.send()
             $scope.$apply()
           ,5600)
         else

@@ -29,7 +29,33 @@ angular.module 'app'
     $scope.oMisses = 0
     $scope.startedTime = 0
     $scope.rival = {}
-
+    $scope.stats = {}
+    $scope.matchesInfo = {labels: ["Wins", "Losses"], data: []}
+    $scope.matchesConfig = {
+      title: {
+        display: true
+        text: "Matches"
+        fontColor: "#000"
+      }
+      legend: {
+        display: true
+        fontColor: "#000"
+      }
+    }
+    $scope.firesInfo = {labels: ["Hits", "Misses"], data: []}
+    $scope.firesConfig = {
+      title: {
+        display: true
+        text: "Fires"
+        fontColor: "#000"
+      }
+      legend: {
+        display: true
+        labels: {
+          fontColor: "#000"
+        }
+      }
+    }
     window.testStatistics = ->
       socket.send {action: "save-data", matchData:{
         won: true
@@ -99,6 +125,13 @@ angular.module 'app'
       if ship.start.x != ship.end.x then return {length: ship.end.x - ship.start.x + 1, or: 'h'} else return {length: ship.end.y - ship.start.y + 1, or: 'v'}
     $scope.handleMessage = (response) ->
       switch response.msg
+        when "stats"
+          $scope.stats = response.stats
+          $scope.stats.matches = $scope.stats.wins + $scope.stats.losses
+          $scope.stats.ratio = Math.floor(($scope.stats.wins / $scope.stats.matches) * 100)
+          $scope.stats.efficacy = Math.floor(($scope.stats.hits/($scope.stats.hits + $scope.stats.misses))*100)
+          $scope.matchesInfo.data = [$scope.stats.wins, $scope.stats.losses]
+          $scope.firesInfo.data = [$scope.stats.hits, $scope.stats.misses]
         when "reconnected"
           $('#loading-modal').modal('hide')
           console.log(response)
@@ -134,7 +167,9 @@ angular.module 'app'
           $scope.placeShips = false
           $scope.startGame = true
           showModal = true
-        when "not-reconnected" then $('#loading-modal').modal('hide')
+        when "not-reconnected"
+          $('#loading-modal').modal('hide')
+          socket.send({action: "stats"})
         when "matched-player"
           $scope.searching = false
           $scope.startGame = true

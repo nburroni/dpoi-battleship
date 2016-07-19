@@ -1,1 +1,1 @@
-angular.module 'app', ['ngDraggable']
+angular.module 'app', ['ngDraggable', 'chart.js']

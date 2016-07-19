@@ -17,6 +17,7 @@ object Messages {
         case "save-player" => SavePlayer
         case "reconnect" => TryReconnect
         case "save-data" => matchData.getOrElse(InvalidAction("invalid-data"))
+        case "stats" => GetStats
       }
     }
   }
@@ -27,7 +28,7 @@ object Messages {
 
   case object TryReconnect extends Message
 
-  case class ActionOut(msg: String, fire: Option[Fire] = None, data: Option[ReconnectData] = None, oppId: Option[String] = None)
+  case class ActionOut(msg: String, fire: Option[Fire] = None, data: Option[ReconnectData] = None, stats: Option[UserData] = None, oppId: Option[String] = None)
 
 //  case class ReconnectData(msg: String, hasTurn: Boolean, gridOption: List[Coords], shipsOption: Map[ShipPlacement, Sunk]) extends Message
 
@@ -81,4 +82,8 @@ object Messages {
   case class YouWon(x: Int, y: Int) extends Message
 
   case class YouLost(x: Int, y: Int) extends Message
+
+  case class UserData(wins: Int, losses: Int, hits: Int, misses: Int) extends Message
+
+  case object GetStats extends Message
 }

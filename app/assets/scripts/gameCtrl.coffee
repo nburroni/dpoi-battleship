@@ -103,7 +103,7 @@ angular.module 'app'
         y: y
       }
       $("#opp-"+y+''+x).addClass("selected-target")
-      return
+      $scope.fire()
 
     $scope.fire = ->
       $scope.myFires.push($scope.selected)

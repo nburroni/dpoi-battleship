@@ -32,14 +32,22 @@ object GameManager extends GlobalSettings {
           val misses = user.get("misses").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
           player ! UserData(wins, losses, hits, misses)
       }
+//      val gamesCollection = db.getCollection("games")
+//      gamesCollection.find().toFuture().map{
+//        case Seq(doc) =>
+//          doc.get("player") match {
+//            case Some(playerId) =>
+//          }
+//      }
     }
   }
 
-  def saveData(_id: String, data: MatchData) = {
+  def saveData(_id: String, data: MatchData, rivalId: String) = {
     val mongoUtil = MongoUtil("battleship")
     val db = mongoUtil.getDB
     if (db != null) {
       val collection = db.getCollection("users")
+      var saved, inserted = false
       collection.find(equal("_id", _id)).first().subscribe {
         user: Document =>
           val wins = if (data.won) 1 else 0
@@ -50,7 +58,6 @@ object GameManager extends GlobalSettings {
           val prevMisses = user.get("misses").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
           val prevTime = user.get("time").getOrElse(BsonInt64(0)).asInstanceOf[BsonInt64].getValue
           val name = user.get("name").getOrElse(BsonString("")).asInstanceOf[BsonString].getValue
-
 
           val newDocument = Document(
             "_id" -> _id,
@@ -63,8 +70,17 @@ object GameManager extends GlobalSettings {
           )
           collection.replaceOne(equal("_id", _id), newDocument) subscribe{
             r: UpdateResult =>
+              saved = true
               println(r.getMatchedCount)
+              if (inserted) mongoUtil.close
           }
+      }
+      val gamesCollection = db.getCollection("games")
+      val newGame = Document("player" -> _id, "rival" -> rivalId, "duration" -> data.time, "won" -> data.won, "hits" -> data.hits, "misses" -> data.misses)
+      gamesCollection.insertOne(newGame) subscribe{
+        (c:Completed) =>
+          if (saved) mongoUtil.close
+          inserted = true
       }
     }
   }

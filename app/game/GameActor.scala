@@ -21,6 +21,7 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
   playerTwo.self ! OpponentTurn
 
   def switchTurn(currentPlayer: ActorRef, playerData: PlayerData, rival: ActorRef, rivalData: PlayerData) = {
+
     playerData.hasTurn = false
     rivalData.hasTurn = true
     players = Map (
@@ -32,6 +33,10 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
   }
 
   override def receive = {
+    case s: SetReconnect =>
+      if (players(s.player).shipsOption.isDefined && otherPlayerData(s.player).shipsOption.isDefined){
+        GameManager setReconnect(players(s.player).id, s.player, self)
+      }
     case Fire(x, y) =>
       val fireCoords: Coords = Coords(x, y)
       val currentPlayer: ActorRef = sender
@@ -97,6 +102,8 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
       val rivalData = otherPlayerData(newP)
       GameManager successfulReconnection prevId
       newP ! Reconnected(self, data, rivalData)
+    case m: MatchData =>
+      GameManager saveData(playerOne.id, m, playerTwo.id)
   }
 
   def emit(msg: Message) = players foreach (_._1 ! msg)

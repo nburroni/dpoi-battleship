@@ -6,7 +6,7 @@ import akka.actor._
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import controllers.Messages._
-import game.{ReconnectData, PlayerData, GameManager}
+import game.{GameActor, ReconnectData, PlayerData, GameManager}
 import play.api.libs.json.Json
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
@@ -58,10 +58,10 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
       case p: PlacedShips => gameOption foreach (_ ! p)
       case SavePlayer =>
         gameOption foreach { act =>
-          GameManager setReconnect(_id, self, act)
+          act ! SetReconnect(self)
         }
       case TryReconnect => GameManager tryReconnect(_id, self)
-      case m: MatchData => GameManager saveData(_id, m)
+      case m: MatchData => gameOption foreach (_ ! m)
       case GetStats => GameManager getStats(_id, self)
     }
 

@@ -1,8 +1,5 @@
 package controllers
 
-import akka.actor.ActorRef
-import controllers.Messages.{UserData}
-import org.mongodb.scala.bson._
 import org.mongodb.scala.{Completed, Document}
 import org.mongodb.scala.model.Filters._
 import play.api.libs.json.{JsValue, Json}
@@ -10,8 +7,6 @@ import play.api.mvc._
 import util._
 
 import scala.concurrent.Future
-import scala.collection.JavaConversions._
-
 
 case class User(id: String, name: String)
 

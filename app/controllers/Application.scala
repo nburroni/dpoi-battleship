@@ -8,10 +8,6 @@ class Application extends Controller {
     Ok(views.html.index())
   }
 
-  def socket = Action {
-    Ok(views.html.socket())
-  }
-
   def game = Action {
     Ok(views.html.game())
   }

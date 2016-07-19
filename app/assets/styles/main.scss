@@ -14,6 +14,24 @@ table {
   user-select: none;
 }
 
+.hidden {
+  display: none;
+}
+
+.btn-primary {
+  background: $greenish-blue;
+  border: none;
+  border-radius: 0;
+  transition: background-color .2s;
+
+  &:hover, &:focus {
+    background: lighten($greenish-blue, 4%);
+  }
+  &:active, &:active:hover {
+    background: darken($greenish-blue, 4%);
+  }
+}
+
 @import "index";
 @import "profile";
 @import "game";

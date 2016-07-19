@@ -1,3 +1,5 @@
+@import "vars";
+
 .profile {
   .battleship-bg {
     background-image: url(../images/battleship.jpg);
@@ -13,13 +15,12 @@
   }
 
   .navbar {
-    background: #697159;
+    background: $greenish-blue;
     height: 54px;
 
     .fb-data {
       height: 100%;
       span {
-        color: white;
         padding-right: 15px;
         cursor: default;
       }
@@ -31,7 +32,26 @@
   }
 
   .play-btn-area {
+    height: 90vh;
+
     .play-btn {
+      text-transform: uppercase;
+      padding: 15px;
+      width: 175px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      .fa {
+        margin-left: 10px;
+      }
+    }
+    .searching {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
     }
   }
 
@@ -45,18 +65,5 @@
 
   .container {
     margin-top: 2vh;
-  }
-
-  .btn-primary {
-    background: #697159;
-    border-color: #697159;
-  }
-  .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-    background: #545a47;
-    border-color: #545a47;
-  }
-  .btn-primary:active:focus {
-    background: #434838;
-    border-color: #434838;
   }
 }

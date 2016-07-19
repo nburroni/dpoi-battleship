@@ -1,3 +1,5 @@
+@import "vars";
+
 .game {
   $td-width: 4.2vw;
   $td-height: 3vw;
@@ -20,7 +22,7 @@
     color: #0006d0;
   }
   .table {
-    background: #043450;
+    background: $blue;
     color: white;
     text-align: center;
     th {
@@ -102,9 +104,15 @@
   }
   .stats {
     color: #000 !important;
-    background: #697159;
-    th {
-      background: #697159;
+    background: $gray;
+    thead {
+      tr {
+        th {
+          background: $greenish-lightblue;
+          font-weight: 100;
+          text-align: center;
+        }
+      }
     }
   }
 

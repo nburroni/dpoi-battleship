@@ -32,6 +32,7 @@ angular.module 'app'
     $scope.stats = {}
     $scope.matchesInfo = {labels: ["Wins", "Losses"], data: []}
     $scope.matchesConfig = {
+      responsive: true
       title: {
         display: true
         text: "Matches"
@@ -44,6 +45,7 @@ angular.module 'app'
     }
     $scope.firesInfo = {labels: ["Hits", "Misses"], data: []}
     $scope.firesConfig = {
+      responsive: true
       title: {
         display: true
         text: "Fires"
@@ -130,15 +132,13 @@ angular.module 'app'
       if showModal
         ff = $('#fire-feedback')
         ff.removeClass 'hidden'
-        ff.addClass 'show'
-        $timeout(->
-          ff.removeClass 'show'
-          $timeout( -> ff.addClass 'hidden', 250)
-        , time)
-#        $('#fire-modal').modal('show')
-#        $timeout(->
-#          $('#fire-modal').modal('hide')
-#        , time)
+        $timeout( ->
+          ff.addClass 'show'
+          $timeout( ->
+            ff.removeClass 'show'
+            ff.addClass 'hidden'
+          , time)
+        , 150)
 
     $scope.handleMessage = (response) ->
       switch response.msg

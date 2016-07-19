@@ -104,10 +104,10 @@
         </div>
         <div ng-show="placeShips" class="container-fluid" ng-cloak>
             <div class="row">
-                <div class="col-sm-4">
-                    <h1>Please, place your ships.</h1>
+                <div class="col-sm-3">
+                    <h3>Place your ships</h3>
                 </div>
-                <div class="col-sm-4" ng-cloak>
+                <div class="col-sm-5" ng-cloak ng-show="rival.name">
                     Playing against: {{ rival.name }} <img ng-src="{{ rival.imageSrc }}" class="img-circle">
                 </div>
                 <div class="col-sm-4">
@@ -169,10 +169,10 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-xl-6 text-xs-center">
-                    <h3>Opponent's board</h3>
+                    <img ng-src="{{ rival.imageSrc }}" class="img-circle"> <h3>{{ rival.name }}</h3>
                 </div>
                 <div class="col-xl-6 text-xs-center hidden-lg-down">
-                    <h3>Your board</h3>
+                    <img ng-src="{{ user.imageSrc }}" class="img-circle"> <h3>{{ user.name }}</h3>
                 </div>
                 <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
@@ -216,7 +216,7 @@
                     <button class="btn btn-danger" ng-show="selected" ng-click="fire()">FIRE</button>
                 </div>
                 <div class="col-xs-12 col-xl-6 text-xs-center hidden-xl-up">
-                    <h3>Your board</h3>
+                    <img ng-src="{{ user.imageSrc }}" class="img-circle"> <h3>{{ user.name }}</h3>
                 </div>
                 <div class="col-xs-12 col-xl-6">
                     <table class="table table-bordered" id="my-board">

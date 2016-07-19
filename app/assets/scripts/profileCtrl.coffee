@@ -1,6 +1,6 @@
 angular.module 'app'
-.controller 'ProfileController', ['$scope', '$http',
-  ($scope, $http) ->
+.controller 'ProfileController', ['$rootScope', '$scope', '$http',
+  ($rootScope, $scope, $http) ->
 
     FB.init
       appId      : '1550248965271409'
@@ -15,6 +15,7 @@ angular.module 'app'
 #        window.location.href = '/' if response.status != 'connected'
         FB.api '/me', (user) ->
           $scope.user = { name: user.name, id: user.id }
+          $rootScope.user = $scope.user
           FB.api "/#{user.id}/picture", (response) ->
             if response && !response.error
               $scope.user.imageSrc = response.data.url

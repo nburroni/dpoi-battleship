@@ -1,6 +1,6 @@
 angular.module 'app'
-.controller 'GameController', ['$scope', '$http',
-  ($scope, $http) ->
+.controller 'GameController', ['$rootScope', '$scope', '$http',
+  ($rootScope, $scope, $http) ->
 
     $scope.startGame = false
     $scope.placeShips = false
@@ -121,8 +121,10 @@ angular.module 'app'
     showModal = true
     window.onbeforeunload = () ->
       socket.send {action: "save-player"}
+
     getShipLength = (ship) ->
       if ship.start.x != ship.end.x then return {length: ship.end.x - ship.start.x + 1, or: 'h'} else return {length: ship.end.y - ship.start.y + 1, or: 'v'}
+
     $scope.handleMessage = (response) ->
       switch response.msg
         when "stats"
@@ -161,6 +163,8 @@ angular.module 'app'
               $scope.handleMessage {msg: "hit-received", fire: oppFire.coords}
             else
               $scope.handleMessage {msg: "miss-received", fire: oppFire.coords}
+
+          $scope.rivalData(newData.oppId)
           $scope.currentShips = []
           $scope.searching = false
           $scope.selected = null
@@ -176,12 +180,7 @@ angular.module 'app'
           $scope.placeShips = true
           $scope.startedTime = new Date().getTime()
           response.oppId = -1 if !response.oppId
-          FB.api "/#{response.oppId}/picture", (response) ->
-            if response && !response.error
-              $scope.rival.imageSrc = response.data.url
-              $scope.$apply()
-          $http.get "/user/#{response.oppId}/name"
-            .success (response) -> $scope.rival.name = response
+          $scope.rivalData(response.oppId)
         when "searching-game"
           $scope.startGame = false
           $scope.placeShips = false
@@ -284,6 +283,15 @@ angular.module 'app'
         else
           console.log("unknown message")
       $scope.$apply()
+
+    $scope.rivalData = (oppId) ->
+      FB.api "/#{oppId}/picture", (response) ->
+        if response && !response.error
+          $scope.rival.imageSrc = response.data.url
+          $scope.$apply()
+      $http.get "/user/#{oppId}/name"
+        .success (response) -> $scope.rival.name = response
+      $scope.user = $rootScope.user
 
     $scope.getHRelatives = (ship, id)->
       rels = []

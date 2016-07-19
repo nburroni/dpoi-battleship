@@ -57,10 +57,14 @@ class Users extends Controller {
 
   def userName(id: String) = Action.async {
     import scala.concurrent.ExecutionContext.Implicits.global
-    MongoUtil("battleship").getDB.getCollection("users").find(equal("_id", id)).toFuture().map {
-      case Seq(doc) => doc.get("name") match {
-        case None => NotFound
-        case Some(name) => Ok(name.asString.getValue)
+    if (id == "-1") {
+      Future { BadRequest("Invalid id") }
+    } else {
+      MongoUtil("battleship").getDB.getCollection("users").find(equal("_id", id)).toFuture().map {
+        case Seq(doc) => doc.get("name") match {
+          case None => NotFound
+          case Some(name) => Ok(name.asString.getValue)
+        }
       }
     }
   }

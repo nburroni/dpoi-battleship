@@ -10,8 +10,8 @@ import controllers.Messages._
 class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
 
   var players: Map[ActorRef, PlayerData] = Map (
-    playerOne.self -> new PlayerData(turn = true),
-    playerTwo.self -> new PlayerData(turn = false)
+    playerOne.self -> new PlayerData(turn = true, id = playerOne.id),
+    playerTwo.self -> new PlayerData(turn = false, id = playerTwo.id)
   )
 
   playerOne.self ! MatchGame(self, playerTwo.id)
@@ -35,7 +35,7 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
     case Fire(x, y) =>
       val fireCoords: Coords = Coords(x, y)
       val currentPlayer: ActorRef = sender
-      val playerData = players.getOrElse(currentPlayer, new PlayerData())
+      val playerData = players.getOrElse(currentPlayer, PlayerData())
       val rival: ActorRef = otherPlayer(currentPlayer)
       val rivalData = otherPlayerData(currentPlayer)
       if (players.get(currentPlayer).fold(false)(_.hasTurn)) {
@@ -105,11 +105,11 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
   def otherPlayerData(currentPlayer: ActorRef): PlayerData = (players - currentPlayer).head._2
 
 }
-case class PlayerData(turn: Boolean = false) {
+case class PlayerData(turn: Boolean = false, id: String = "-1") {
   var hasTurn = turn
   var gridOption: Option[List[Coords]] = None
   var shipsOption: Option[Map[ShipPlacement, Sunk]] = None
   var mySunkenShips: Int = 0
 }
 
-case class ReconnectData(turn: Boolean, oppFires: List[FireMap], ships: List[ShipPlacement], myFires: List[FireMap])
+case class ReconnectData(turn: Boolean, oppFires: List[FireMap], ships: List[ShipPlacement], myFires: List[FireMap], oppId: String)

@@ -73,7 +73,7 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
       val shipList = pData.shipsOption.getOrElse(Map()).keys.toList
       val myFires = getFires(rivalData)
       val oppFires = getFires(pData)
-      out ! ActionOut("reconnected", data = Some(ReconnectData(pData.hasTurn, oppFires, shipList, myFires)))
+      out ! ActionOut("reconnected", data = Some(ReconnectData(pData.hasTurn, oppFires, shipList, myFires, rivalData.id)))
 
     case MatchGame(gameActor, id) =>
       this.gameOption = Some(gameActor)

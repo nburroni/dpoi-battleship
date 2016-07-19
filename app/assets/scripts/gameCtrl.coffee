@@ -1,6 +1,6 @@
 angular.module 'app'
-.controller 'GameController', ['$rootScope', '$scope', '$http',
-  ($rootScope, $scope, $http) ->
+.controller 'GameController', ['$rootScope', '$scope', '$http', '$timeout',
+  ($rootScope, $scope, $http, $timeout) ->
 
     $scope.startGame = false
     $scope.placeShips = false
@@ -102,8 +102,9 @@ angular.module 'app'
         x: x
         y: y
       }
-      $("#opp-"+y+''+x).addClass("selected-target")
-      $scope.fire()
+      if $scope.myTurn
+        $("#opp-"+y+''+x).addClass("selected-target")
+        $scope.fire()
 
     $scope.fire = ->
       $scope.myFires.push($scope.selected)
@@ -124,6 +125,20 @@ angular.module 'app'
 
     getShipLength = (ship) ->
       if ship.start.x != ship.end.x then return {length: ship.end.x - ship.start.x + 1, or: 'h'} else return {length: ship.end.y - ship.start.y + 1, or: 'v'}
+
+    $scope.fireModal = (time) ->
+      if showModal
+        ff = $('#fire-feedback')
+        ff.removeClass 'hidden'
+        ff.addClass 'show'
+        $timeout(->
+          ff.removeClass 'show'
+          $timeout( -> ff.addClass 'hidden', 250)
+        , time)
+#        $('#fire-modal').modal('show')
+#        $timeout(->
+#          $('#fire-modal').modal('hide')
+#        , time)
 
     $scope.handleMessage = (response) ->
       switch response.msg
@@ -190,21 +205,14 @@ angular.module 'app'
           $("#my-"+response.fire.y+''+response.fire.x).addClass("hit-target")
           $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.hitImg]
           $scope.fireMessage = $scope.hitMessage
-          if showModal
-            $('#fire-modal').modal('toggle')
-            setTimeout(->
-              $('#fire-modal').modal('hide')
-            , 2000)
+          $scope.fireModal(1000)
         when "sunk-received"
           $scope.oHits++
           $scope.opponentFires.push(response.fire)
           $("#my-"+response.fire.y+''+response.fire.x).addClass("hit-target")
           $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.hitImg]
           $scope.fireMessage = $scope.sinkMessage
-          $('#fire-modal').modal('toggle')
-          setTimeout(->
-            $('#fire-modal').modal('hide')
-          , 5500)
+          $scope.fireModal(4000)
 
         when "miss-received"
           $scope.oMisses++
@@ -212,11 +220,7 @@ angular.module 'app'
           $("#my-"+response.fire.y+''+response.fire.x).addClass("miss-target")
           $scope.myBoard[response.fire.x][response.fire.y].feedback = [$scope.missImg]
           $scope.fireMessage = $scope.missMessage
-          if showModal
-            $('#fire-modal').modal('toggle')
-            setTimeout(->
-              $('#fire-modal').modal('hide')
-            , 2000)
+          $scope.fireModal(1000)
         when "hit"
           $scope.hits++
           $scope.selected = null
@@ -224,11 +228,7 @@ angular.module 'app'
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("hit-target")
           $scope.fireMessage = $scope.hitMessage
-          if showModal
-            $('#fire-modal').modal('toggle')
-            setTimeout(->
-              $('#fire-modal').modal('hide')
-            , 2000)
+          $scope.fireModal(1000)
         when "miss"
           $scope.misses++
           $scope.selected = null
@@ -236,11 +236,7 @@ angular.module 'app'
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("miss-target")
           $scope.fireMessage = $scope.missMessage
-          if showModal
-            $('#fire-modal').modal('toggle')
-            setTimeout(->
-              $('#fire-modal').modal('hide')
-            , 2000)
+          $scope.fireModal(1000)
         when "my-turn"
           $scope.myTurn = true
         when "their-turn"
@@ -255,10 +251,7 @@ angular.module 'app'
           $("#opp-"+response.fire.y+''+response.fire.x).removeClass()
           $("#opp-"+response.fire.y+''+response.fire.x).addClass("hit-target")
           $scope.fireMessage = $scope.sinkMessage
-          $('#fire-modal').modal('toggle')
-          setTimeout(->
-            $('#fire-modal').modal('hide')
-          , 5500)
+          $scope.fireModal(4000)
         when "won-match"
           response.msg = "sunk-ship"
           $scope.handleMessage(response)

@@ -1,33 +1,33 @@
 .game {
   $td-width: 4.2vw;
   $td-height: 3vw;
-  #shooting-board{
-    td:hover{
+  #shooting-board {
+    td:hover {
       background: #f5f5f5;
       cursor: pointer;
     }
   }
-  .selected-target{
+  .selected-target {
     color: orange;
   }
-  .hit-target{
+  .hit-target {
     color: #870006;
   }
   .sunk-ship {
     color: gold;
   }
-  .miss-target{
+  .miss-target {
     color: #0006d0;
   }
-  .table{
+  .table {
     background: #043450;
     color: white;
     text-align: center;
-    th{
+    th {
       width: $td-width;
       background: black;
     }
-    td{
+    td {
       height: $td-height;
       width: $td-width;
       position: relative;
@@ -43,53 +43,53 @@
       }
     }
   }
-  .ships-container{
-    img{
+  .ships-container {
+    img {
       height: $td-height;
       display: block;
     }
   }
-  .floating-img{
+  .floating-img {
     z-index: 100;
     position: absolute;
     top: 0;
     left: 0;
   }
-  .width1{
+  .width1 {
     width: $td-width;
   }
-  .width2{
+  .width2 {
     width: $td-width * 2;
   }
-  .width3{
+  .width3 {
     width: $td-width * 3;
   }
-  .width4{
+  .width4 {
     width: $td-width * 4;
   }
-  .width5{
+  .width5 {
     width: $td-width * 5;
   }
-  .height1{
+  .height1 {
     height: $td-height;
   }
-  .height2{
+  .height2 {
     height: $td-height * 2;
   }
-  .height3{
+  .height3 {
     height: $td-height * 3;
   }
-  .height4{
+  .height4 {
     height: $td-height * 4;
   }
-  .height5{
+  .height5 {
     height: $td-height * 5;
   }
 
-  .rotate-button{
+  .rotate-button {
     position: absolute;
-    left:0;
-    top:0;
+    left: 0;
+    top: 0;
     height: 2vw;
     width: 2vw;
     z-index: 300;
@@ -100,11 +100,34 @@
       padding: 20px 0;
     }
   }
-  .stats{
+  .stats {
     color: #000 !important;
     background: #697159;
-    th{
+    th {
       background: #697159;
+    }
+  }
+
+  #fire-feedback {
+    position: absolute;
+    z-index: 1000;
+    width: 200px;
+    height: 200px;
+    bottom: -200px;
+    opacity: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    padding: 10px;
+    transition: all .2s;
+
+    &.show {
+      bottom: 0;
+      opacity: 1;
+    }
+    img {
+      max-width: 100%;
     }
   }
 }

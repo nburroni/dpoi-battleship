@@ -10,6 +10,10 @@ body {
   font-family: "Tahoma", sans-serif;
 }
 
+table {
+  user-select: none;
+}
+
 @import "index";
 @import "profile";
 @import "game";

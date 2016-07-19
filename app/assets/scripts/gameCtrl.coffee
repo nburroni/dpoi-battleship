@@ -145,8 +145,8 @@ angular.module 'app'
         when "stats"
           $scope.stats = response.stats
           $scope.stats.matches = $scope.stats.wins + $scope.stats.losses
-          $scope.stats.ratio = Math.floor(($scope.stats.wins / $scope.stats.matches) * 100)
-          $scope.stats.efficacy = Math.floor(($scope.stats.hits/($scope.stats.hits + $scope.stats.misses))*100)
+          $scope.stats.ratio = Math.floor(($scope.stats.wins / $scope.stats.matches) * 100) || 0
+          $scope.stats.efficacy = Math.floor(($scope.stats.hits/($scope.stats.hits + $scope.stats.misses))*100) || 0
           $scope.matchesInfo.data = [$scope.stats.wins, $scope.stats.losses]
           $scope.firesInfo.data = [$scope.stats.hits, $scope.stats.misses]
         when "reconnected"

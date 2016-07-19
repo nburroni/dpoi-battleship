@@ -57,10 +57,10 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" ng-if="stats.matches > 0">
                             <canvas id="doughnut" class="chart chart-doughnut" chart-data="matchesInfo.data" chart-labels="matchesInfo.labels" chart-options="matchesConfig"></canvas>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" ng-if="stats.matches > 0">
                             <canvas id="doughnut-2" class="chart chart-doughnut" chart-data="firesInfo.data" chart-labels="firesInfo.labels" chart-options="firesConfig"></canvas>
                         </div>
                     </div>

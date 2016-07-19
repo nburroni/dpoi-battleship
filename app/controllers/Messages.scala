@@ -46,6 +46,8 @@ object Messages {
 
   case object NotReconnected extends Message
 
+  case class SetReconnect(player: ActorRef) extends Message
+
   case class Fire(x: Int, y: Int) extends Message
 
   case class MissedShot(x: Int, y: Int) extends Message

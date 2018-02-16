@@ -103,7 +103,10 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
       GameManager successfulReconnection prevId
       newP ! Reconnected(self, data, rivalData)
     case m: MatchData =>
-      GameManager saveData(playerOne.id, m, playerTwo.id)
+      val playerData = players.getOrElse(sender, PlayerData())
+      val rivalData = otherPlayerData(sender)
+      GameManager saveData(playerData.id, m, rivalData.id)
+      context.stop(self)
   }
 
   def emit(msg: Message) = players foreach (_._1 ! msg)

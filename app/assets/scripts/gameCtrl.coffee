@@ -270,7 +270,7 @@ angular.module 'app'
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You lost :'( !"}
-            socket.send()
+#            socket.send()
             $scope.$apply()
           ,5600)
         else

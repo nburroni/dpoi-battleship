@@ -75,6 +75,33 @@ object GameManager extends GlobalSettings {
               if (inserted) mongoUtil.close
           }
       }
+      collection.find(equal("_id", rivalId)).first().subscribe {
+        user: Document =>
+          val wins = if (data.won) 1 else 0
+          val losses = if (wins == 1) 0 else 1
+          val prevWins = user.get("wins").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val prevLosses = user.get("losses").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val prevHits = user.get("hits").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val prevMisses = user.get("misses").getOrElse(BsonInt32(0)).asInstanceOf[BsonInt32].getValue
+          val prevTime = user.get("time").getOrElse(BsonInt64(0)).asInstanceOf[BsonInt64].getValue
+          val name = user.get("name").getOrElse(BsonString("")).asInstanceOf[BsonString].getValue
+
+          val newDocument = Document(
+            "_id" -> _id,
+            "name" -> name,
+            "wins" -> (prevWins + wins),
+            "losses" -> (prevLosses + losses),
+            "hits" -> (prevHits + data.hits),
+            "misses" -> (prevMisses + data.misses),
+            "time" -> (prevTime + data.time)
+          )
+          collection.replaceOne(equal("_id", rivalId), newDocument) subscribe{
+            r: UpdateResult =>
+              saved = true
+              println(r.getMatchedCount)
+              if (inserted) mongoUtil.close
+          }
+      }
       val gamesCollection = db.getCollection("games")
       val newGame = Document("player" -> _id, "rival" -> rivalId, "duration" -> data.time, "won" -> data.won, "hits" -> data.hits, "misses" -> data.misses)
       gamesCollection.insertOne(newGame) subscribe{

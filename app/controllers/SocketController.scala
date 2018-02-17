@@ -39,9 +39,8 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
     ActorFlow.actorRef(out => PlayerActor.props(out, request.session.get("_id").getOrElse("")))
   }
 
-  def socketUrl = Action { request =>
-    val url = "ws://" + request.host + routes.SocketController.socket.url
-    Ok(url)
+  def socketUrl = Action {
+    Ok(routes.SocketController.socket.url)
   }
 
 }

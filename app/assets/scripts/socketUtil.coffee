@@ -2,7 +2,8 @@ socketInfo = {}
 
 window.socketUtil =
   connect: ->
-      $.get('/socket/url').done (socketUrl) ->
+      $.get('/socket/url').done (path) ->
+        socketUrl = "ws://" + window.location.host + path
         socketInfo.socket = new WebSocket(socketUrl)
         socketInfo.socket.onopen = socketInfo.onopen
         socketInfo.socket.onmessage = socketInfo.onmessage

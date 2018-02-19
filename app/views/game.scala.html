@@ -58,10 +58,10 @@
                             </div>
                         </div>
                         <div class="col-sm-6" ng-if="stats.matches > 0">
-                            <canvas id="doughnut" class="chart chart-doughnut" chart-data="matchesInfo.data" chart-labels="matchesInfo.labels" chart-options="matchesConfig"></canvas>
+                            <div class="chart-wrapper"><canvas id="doughnut" class="chart chart-doughnut" chart-data="matchesInfo.data" chart-labels="matchesInfo.labels" chart-options="matchesConfig"></canvas></div>
                         </div>
                         <div class="col-sm-6" ng-if="stats.matches > 0">
-                            <canvas id="doughnut-2" class="chart chart-doughnut" chart-data="firesInfo.data" chart-labels="firesInfo.labels" chart-options="firesConfig"></canvas>
+                            <div class="chart-wrapper"><canvas id="doughnut-2" class="chart chart-doughnut" chart-data="firesInfo.data" chart-labels="firesInfo.labels" chart-options="firesConfig"></canvas></div>
                         </div>
                     </div>
                 </div>
@@ -277,12 +277,12 @@
                 <div class="endgame-stats">
                     <h2>Your Stats</h2>
                     <h3>Hits: {{hits}} | Misses: {{misses}}</h3>
-                    <h3>Efficacy: {{((hits*100)/(hits+misses))}}%</h3>
+                    <h3>Efficacy: {{Math.round((hits*100)/(hits+misses))}}%</h3>
                 </div>
                 <div class="endgame-stats">
                     <h2>Opponent's Stats</h2>
                     <h3>Hits: {{oHits}} | Misses: {{oMisses}}</h3>
-                    <h3>Efficacy: {{((oHits*100)/(oHits+oMisses))}}%</h3>
+                    <h3>Efficacy: {{Math.round((oHits*100)/(oHits+oMisses))}}%</h3>
                 </div>
             </div>
 

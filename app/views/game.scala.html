@@ -116,7 +116,8 @@
                     Playing against: {{ rival.name }} <img ng-src="{{ rival.imageSrc }}" class="img-circle">
                 </div>
                 <div class="col-sm-4">
-                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">I'm Done!</a>
+                    <a class="btn btn-primary pull-sm-right" ng-click="shipsPlaced()" ng-show="currentShips.length == 0">
+                        I'm Done!</a>
                 </div>
                 <div class="col-xl-6">
                     <table class="table table-bordered" id="shooting-board">
@@ -269,13 +270,21 @@
             </div>
         </div>
         <div ng-show="result.show" class="text-xs-center" ng-cloak>
-            <h1>{{result.message}}</h1>
-            <h2>Your Stats:</h2>
-            <h3>Hits: {{hits}} - Misses: {{misses}}</h3>
-            <h3>Efficacy: {{((hits*100)/(hits+misses))}}%</h3>
-            <h2>Opponent's Stats:</h2>
-            <h3>Hits: {{oHits}} - Misses: {{oMisses}}</h3>
-            <h3>Efficacy: {{((oHits*100)/(oHits+oMisses))}}%</h3>
+            <div class="results">
+                <div class="endgame-result">
+                    <h1>{{result.message.toUpperCase()}}</h1>
+                </div>
+                <div class="endgame-stats">
+                    <h2>Your Stats</h2>
+                    <h3>Hits: {{hits}} | Misses: {{misses}}</h3>
+                    <h3>Efficacy: {{((hits*100)/(hits+misses))}}%</h3>
+                </div>
+                <div class="endgame-stats">
+                    <h2>Opponent's Stats</h2>
+                    <h3>Hits: {{oHits}} | Misses: {{oMisses}}</h3>
+                    <h3>Efficacy: {{((oHits*100)/(oHits+oMisses))}}%</h3>
+                </div>
+            </div>
 
             <button class="btn btn-lg btn-primary play-btn" onclick="window.location.href = '/game'">Home</button>
         </div>

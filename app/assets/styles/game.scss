@@ -138,4 +138,31 @@
       max-width: 100%;
     }
   }
+
+  .results {
+    margin: 20px auto;
+    width: 24rem;
+    background-color: #ffffff94;
+    border-radius: 15px;
+    border: 2px solid #ffffff70;
+    & > div {
+      &:not(:last-child) {
+        border-bottom: 2px solid #ffffff70;
+      }
+      &.endgame-result {
+        padding: 1rem;
+        font-weight: bold;
+        color: #636363;
+        text-transform: uppercase;
+      }
+      &.endgame-stats {
+        padding: 0.5rem 2rem;
+        h2 {
+          font-weight: bold;
+          color: #737373;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
 }

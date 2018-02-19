@@ -256,7 +256,7 @@ angular.module 'app'
           response.msg = "sunk-ship"
           $scope.handleMessage(response)
           setTimeout(->
-            $scope.result = {show: true, message: "You won :) !"}
+            $scope.result = {show: true, message: "You Won!"}
             socket.send {action: "save-data", matchData:{
               won: true
               hits: $scope.hits
@@ -269,7 +269,7 @@ angular.module 'app'
           response.msg = "sunk-received"
           $scope.handleMessage(response)
           setTimeout(->
-            $scope.result = {show: true, message: "You lost :'( !"}
+            $scope.result = {show: true, message: "You Lost"}
 #            socket.send()
             $scope.$apply()
           ,5600)

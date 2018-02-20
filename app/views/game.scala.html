@@ -170,7 +170,11 @@
         <div ng-show="startGame && !placeShips && !result.show" class="container-fluid" ng-cloak>
             <div class="row">
                 <div class="col-xs-12 text-xs-center">
+
                     <h2>{{ myTurn ? "Your" : "Opponent's" }} turn</h2>
+                </div>
+                <div class="timer-container center-block" ng-show="myTurn">
+                    <div></div>
                 </div>
             </div>
             <div class="row">

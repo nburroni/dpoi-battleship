@@ -5,13 +5,14 @@ import controllers.{FireMap, PlayerActor}
 import controllers.Messages._
 
 import scala.concurrent.duration._
+import scala.util.Random
 
 /**
   * Created by nico on 08/06/16.
   */
 class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
 
-  var players: Map[ActorRef, PlayerData] = Map (
+  var players: Map[ActorRef, PlayerData] = Map(
     playerOne.self -> new PlayerData(turn = true, id = playerOne.id),
     playerTwo.self -> new PlayerData(turn = false, id = playerTwo.id)
   )
@@ -26,7 +27,7 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
 
     playerData.hasTurn = false
     rivalData.hasTurn = true
-    players = Map (
+    players = Map(
       currentPlayer -> playerData,
       rival -> rivalData
     )
@@ -41,64 +42,23 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
       rival ! TimeoutWon
 
     case s: SetReconnect =>
-      if (players(s.player).shipsOption.isDefined && otherPlayerData(s.player).shipsOption.isDefined){
+      if (players(s.player).shipsOption.isDefined && otherPlayerData(s.player).shipsOption.isDefined) {
         GameManager setReconnect(players(s.player).id, s.player, self)
       }
 
-    case Fire(x, y) =>
-      sender ! CancelTimeout
-      val fireCoords: Coords = Coords(x, y)
-      val currentPlayer: ActorRef = sender
-      val playerData = players.getOrElse(currentPlayer, PlayerData())
-      val rival: ActorRef = otherPlayer(currentPlayer)
-      val rivalData = otherPlayerData(currentPlayer)
-      if (players.get(currentPlayer).fold(false)(_.hasTurn)) {
-        val alreadyShot = rivalData.gridOption.fold(false)(_.contains(fireCoords))
+    case AutoFire =>
+      def getRandomCoord = new Random().nextInt(10)
 
-        if (!alreadyShot) {
-          var sunken = false
-          val hit: Boolean = rivalData.shipsOption.fold(false) {
-            case placements: Map[ShipPlacement, Sunk] =>
-              placements.map {
-                case (placement, sunk) =>
-                  if (!sunk.isSunk && placement.contains(fireCoords)) {
-                    placement.alterLives -= 1
-                    if (placement.alterLives == 0) {
-                      sunk.isSunk = true
-                      sunken = true
-                      playerData.mySunkenShips += 1
-                    }
-                    true
-                  } else {
-                    false
-                  }
-              }.fold(false)(_ || _)
-          }
-          if (hit) {
-            if(sunken){
-              val allSunken = rivalData.shipsOption.fold(false)(_.forall(_._2.isSunk))
-              if (allSunken){
-                currentPlayer ! YouWon(x,y)
-                rival ! YouLost(x,y)
-              }else{
-                rival ! SetTimeout
-                currentPlayer ! SunkShip(x, y)
-                rival ! OpponentSunkShip(x, y)
-              }
-            }else{
-              rival ! SetTimeout
-              currentPlayer ! HitShot(x, y)
-              rival ! OpponentHit(x, y)
-            }
-          } else {
-            rival ! SetTimeout
-            currentPlayer ! MissedShot(x, y)
-            rival ! OpponentMissed(x, y)
-          }
-          rivalData.gridOption = rivalData.gridOption.map(fireCoords :: _)
-          switchTurn(currentPlayer, playerData, rival, rivalData)
-        }
+      var result = fire(getRandomCoord, getRandomCoord)
+      while (result) {
+        result = fire(getRandomCoord, getRandomCoord)
       }
+
+
+
+    case Fire(x, y) =>
+      sender ! CancelShotTimeout
+      fire(x, y)
 
     case PlacedShips(placements) =>
       players.get(sender).fold() { data =>
@@ -122,12 +82,74 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
       context.stop(self)
   }
 
+  private def fire(x: Int, y: Int) = {
+    val fireCoords: Coords = Coords(x, y)
+    val currentPlayer: ActorRef = sender
+    val playerData = players.getOrElse(currentPlayer, PlayerData())
+    val rival: ActorRef = otherPlayer(currentPlayer)
+    val rivalData = otherPlayerData(currentPlayer)
+    if (players.get(currentPlayer).fold(false)(_.hasTurn)) {
+      val alreadyShot = rivalData.gridOption.fold(false)(_.contains(fireCoords))
+
+      if (!alreadyShot) {
+        var sunken = false
+        val hit: Boolean = rivalData.shipsOption.fold(false) {
+          case placements: Map[ShipPlacement, Sunk] =>
+            placements.map {
+              case (placement, sunk) =>
+                if (!sunk.isSunk && placement.contains(fireCoords)) {
+                  placement.alterLives -= 1
+                  if (placement.alterLives == 0) {
+                    sunk.isSunk = true
+                    sunken = true
+                    playerData.mySunkenShips += 1
+                  }
+                  true
+                } else {
+                  false
+                }
+            }.fold(false)(_ || _)
+        }
+        if (hit) {
+          if (sunken) {
+            val allSunken = rivalData.shipsOption.fold(false)(_.forall(_._2.isSunk))
+            if (allSunken) {
+              currentPlayer ! YouWon(x, y)
+              rival ! YouLost(x, y)
+              rival ! CancelShotTimeout
+              sender ! CancelShotTimeout
+            } else {
+              rival ! SetShotTimeout
+
+              currentPlayer ! SunkShip(x, y)
+              rival ! OpponentSunkShip(x, y)
+            }
+          } else {
+            rival ! SetShotTimeout
+
+            currentPlayer ! HitShot(x, y)
+            rival ! OpponentHit(x, y)
+          }
+        } else {
+          rival ! SetShotTimeout
+          currentPlayer ! MissedShot(x, y)
+          rival ! OpponentMissed(x, y)
+        }
+        rivalData.gridOption = rivalData.gridOption.map(fireCoords :: _)
+        switchTurn(currentPlayer, playerData, rival, rivalData)
+      }
+      alreadyShot
+    } else true
+  }
+
   def emit(msg: Message) = players foreach (_._1 ! msg)
 
   def otherPlayer(currentPlayer: ActorRef): ActorRef = (players - currentPlayer).head._1
+
   def otherPlayerData(currentPlayer: ActorRef): PlayerData = (players - currentPlayer).head._2
 
 }
+
 case class PlayerData(turn: Boolean = false, id: String = "-1") {
   var hasTurn = turn
   var gridOption: Option[List[Coords]] = None

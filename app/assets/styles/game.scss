@@ -172,4 +172,27 @@
     border-radius: 15px;
     border: 2px solid #ffffff70;
   }
+
+  @keyframes timer {
+    0%   {width: 100%;}
+    100% {width: 0}
+  }
+  .timer-container{
+    height: 30px;
+    width: 100px;
+    background: transparent;
+    border: solid 3px white;
+    position: relative;
+    div{
+      background: red;
+      height: 100%;
+      width: 0;
+      -webkit-animation-name: timer;
+      -moz-animation-name: timer;
+      -o-animation-name: timer;
+      animation-name: timer;
+      animation-duration: 15s;
+      animation-timing-function: linear;
+    }
+  }
 }

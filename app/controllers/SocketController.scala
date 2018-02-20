@@ -52,7 +52,8 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
 class PlayerActor(out: ActorRef, _id: String) extends Actor {
   var gameOption: Option[ActorRef] = None
-  var cancellableTimeout: Option[Cancellable] = None
+  var cancellableShotTimeout: Option[Cancellable] = None
+  var currentTimeouts = 0
 
   def id = _id
 
@@ -126,14 +127,21 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
     case TimeoutWon =>
       out ! ActionOut("timeout-won")
 
-    case SetTimeout =>
-      cancellableTimeout =  Some(ActorSystem("mySystem").scheduler.scheduleOnce(2 minutes, self, GameTimeout))
+    case SetShotTimeout =>
+      cancellableShotTimeout foreach (_.cancel())
+      cancellableShotTimeout = Some(ActorSystem("mySystem").scheduler.scheduleOnce(15 seconds, self, ShotTimeout))
 
-    case CancelTimeout =>
-      cancellableTimeout foreach(_.cancel())
+    case CancelShotTimeout =>
+      currentTimeouts = 0
+      cancellableShotTimeout foreach (_.cancel())
 
-    case GameTimeout =>
-      gameOption.foreach(_ ! GameTimeout)
+    case ShotTimeout =>
+      currentTimeouts += 1
+      if (currentTimeouts == 5) {
+        gameOption foreach (_ ! GameTimeout)
+      }else{
+        gameOption foreach (_ ! AutoFire)
+      }
   }
 
   def getFires(data: PlayerData) = {

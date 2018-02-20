@@ -94,9 +94,14 @@ object Messages {
 
   case object GetStats extends Message
 
+  case object ShotTimeout extends Message
+
+  case object SetShotTimeout extends Message
+
+  case object CancelShotTimeout extends Message
+
+  case object AutoFire extends Message
+
   case object GameTimeout extends Message
 
-  case object SetTimeout extends Message
-
-  case object CancelTimeout extends Message
 }

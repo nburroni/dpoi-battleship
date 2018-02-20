@@ -46,6 +46,7 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
       }
 
     case Fire(x, y) =>
+      sender ! CancelTimeout
       val fireCoords: Coords = Coords(x, y)
       val currentPlayer: ActorRef = sender
       val playerData = players.getOrElse(currentPlayer, PlayerData())

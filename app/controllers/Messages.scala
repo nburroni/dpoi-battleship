@@ -96,4 +96,6 @@ object Messages {
   case object GameTimeout extends Message
 
   case object SetTimeout extends Message
+
+  case object CancelTimeout extends Message
 }

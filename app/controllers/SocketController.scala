@@ -51,6 +51,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
 class PlayerActor(out: ActorRef, _id: String) extends Actor {
   var gameOption: Option[ActorRef] = None
+  var cancellableTimeout: Option[Cancellable] = None
 
   def id = _id
 
@@ -125,7 +126,10 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
       out ! ActionOut("timeout-won")
 
     case SetTimeout =>
-      ActorSystem("mySystem").scheduler.scheduleOnce(5 seconds, self, GameTimeout)
+      cancellableTimeout =  Some(ActorSystem("mySystem").scheduler.scheduleOnce(5 seconds, self, GameTimeout))
+
+    case CancelTimeout =>
+      cancellableTimeout foreach(_.cancel())
 
     case GameTimeout =>
       gameOption.foreach(_ ! GameTimeout)

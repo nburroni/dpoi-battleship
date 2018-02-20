@@ -4,9 +4,9 @@ package game
   * Created by nico on 28/05/16.
   */
 
-import akka.actor.{ActorSystem, Props, ActorRef}
+import akka.actor.{ActorRef, ActorSystem, Props}
 import com.mongodb.client.result.UpdateResult
-import controllers.Messages.{UserData, MatchData, NotReconnected, Reconnect}
+import controllers.Messages.{PlayerMatchStats, NotReconnected, Reconnect, UserData}
 import controllers.PlayerActor
 import org.mongodb.scala.bson._
 import org.mongodb.scala.{Completed, Document}
@@ -42,7 +42,7 @@ object GameManager extends GlobalSettings {
     }
   }
 
-  def saveData(_id: String, data: MatchData, rivalId: String) = {
+  def saveData(_id: String, data: PlayerMatchStats, rivalId: String) = {
     val mongoUtil = MongoUtil("battleship")
     val db = mongoUtil.getDB
     if (db != null) {
@@ -75,13 +75,6 @@ object GameManager extends GlobalSettings {
               if (inserted) mongoUtil.close
           }
       }
-//      val gamesCollection = db.getCollection("games")
-//      val newGame = Document("player" -> _id, "rival" -> rivalId, "duration" -> data.time, "won" -> data.won, "hits" -> data.hits, "misses" -> data.misses)
-//      gamesCollection.insertOne(newGame) subscribe{
-//        (c:Completed) =>
-//          if (saved) mongoUtil.close
-//          inserted = true
-//      }
     }
   }
 

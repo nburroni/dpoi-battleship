@@ -117,7 +117,8 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
     case m: MatchData =>
       val playerData = players.getOrElse(sender, PlayerData())
       val rivalData = otherPlayerData(sender)
-      GameManager saveData(playerData.id, m, rivalData.id)
+      GameManager saveData(playerData.id, m.stats.head, rivalData.id)
+      GameManager saveData(rivalData.id, m.stats(1), playerData.id)
       context.stop(self)
   }
 

@@ -257,43 +257,57 @@ angular.module 'app'
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You Won!", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
-            socket.send {action: "save-data", matchData:{
-              won: true
-              hits: $scope.hits
-              misses: $scope.misses
-              time: new Date().getTime() - $scope.startedTime
-            }}
+            socket.send {
+              action: "save-data",
+              matchData: {
+                stats: [
+                  {
+                    won: true
+                    hits: $scope.hits
+                    misses: $scope.misses
+                    time: new Date().getTime() - $scope.startedTime
+                  },
+                  {
+                    won: false
+                    hits: $scope.oHits
+                    misses: $scope.oMisses
+                    time: new Date().getTime() - $scope.startedTime
+                  }
+                ]
+              }
+            }
             $scope.$apply()
-          ,5600)
+          ,2500)
         when "timeout-won"
           $scope.result = {show: true, message: "Time Exceeded. You Won!", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
-          socket.send {action: "save-data", matchData:{
-            won: true
-            hits: $scope.hits
-            misses: $scope.misses
-            time: new Date().getTime() - $scope.startedTime
-          }}
+          socket.send {
+            action: "save-data",
+            matchData: {
+              stats: [
+                {
+                  won: true
+                  hits: $scope.hits
+                  misses: $scope.misses
+                  time: new Date().getTime() - $scope.startedTime
+                },
+                {
+                  won: false
+                  hits: $scope.oHits
+                  misses: $scope.oMisses
+                  time: new Date().getTime() - $scope.startedTime
+                }
+              ]
+            }
+          }
         when "timeout-lost"
           $scope.result = {show: true, message: "Time Exceeded. You Lost", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
-          socket.send {action: "save-data", matchData:{
-            won: false
-            hits: $scope.hits
-            misses: $scope.misses
-            time: new Date().getTime() - $scope.startedTime
-          }}
         when "lost-match"
           response.msg = "sunk-received"
           $scope.handleMessage(response)
           setTimeout(->
             $scope.result = {show: true, message: "You Lost", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
-            socket.send {action: "save-data", matchData:{
-                won: false
-                hits: $scope.hits
-                misses: $scope.misses
-                time: new Date().getTime() - $scope.startedTime
-              }}
             $scope.$apply()
-          ,4600)
+          ,2500)
         else
           console.log("unknown message")
       $scope.$apply()

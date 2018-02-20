@@ -25,6 +25,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
   implicit val fireMap = Json.format[FireMap]
   implicit val recDataFormat = Json.format[ReconnectData]
   implicit val sunkFormat = Json.format[Sunk]
+  implicit val playerMatchStatFormat = Json.format[PlayerMatchStats]
   implicit val matchFormat = Json.format[MatchData]
   implicit val dataFormat = Json.format[UserData]
 

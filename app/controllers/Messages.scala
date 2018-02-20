@@ -69,7 +69,8 @@ object Messages {
     }
   }
 
-  case class MatchData(won: Boolean, hits: Int, misses: Int, time: Long) extends Message
+  case class MatchData(stats: List[PlayerMatchStats]) extends Message
+  case class PlayerMatchStats(won: Boolean, hits: Int, misses: Int, time: Long)
 
   case class Sunk(sunk: Boolean){
     var isSunk = sunk

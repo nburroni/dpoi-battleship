@@ -11,6 +11,9 @@ import play.api.libs.json.Json
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
 import play.api.libs.streams._
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class SocketController @Inject()(implicit system: ActorSystem, materializer: Materializer) extends Controller {
 
@@ -48,6 +51,7 @@ class SocketController @Inject()(implicit system: ActorSystem, materializer: Mat
 
 class PlayerActor(out: ActorRef, _id: String) extends Actor {
   var gameOption: Option[ActorRef] = None
+
   def id = _id
 
   def receive = {
@@ -113,11 +117,23 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
 
     case u: UserData =>
       out ! ActionOut("stats", stats = Some(u))
-    }
+
+    case TimeoutLost =>
+      out ! ActionOut("timeout-lost")
+
+    case TimeoutWon =>
+      out ! ActionOut("timeout-won")
+
+    case SetTimeout =>
+      ActorSystem("mySystem").scheduler.scheduleOnce(5 seconds, self, GameTimeout)
+
+    case GameTimeout =>
+      gameOption.foreach(_ ! GameTimeout)
+  }
 
   def getFires(data: PlayerData) = {
-    val fires = data.gridOption.getOrElse(List()).map{
-      coords: Coords=>
+    val fires = data.gridOption.getOrElse(List()).map {
+      coords: Coords =>
         val hit: Boolean = data.shipsOption.fold(false) {
           case placements: Map[ShipPlacement, Sunk] =>
             placements.map {

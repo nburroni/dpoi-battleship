@@ -265,14 +265,35 @@ angular.module 'app'
             }}
             $scope.$apply()
           ,5600)
+        when "timeout-won"
+          $scope.result = {show: true, message: "Time exceeded. You won :) !"}
+          socket.send {action: "save-data", matchData:{
+            won: true
+            hits: $scope.hits
+            misses: $scope.misses
+            time: new Date().getTime() - $scope.startedTime
+          }}
+        when "timeout-lost"
+          $scope.result = {show: true, message: "Time exceeded. You lost :'("}
+          socket.send {action: "save-data", matchData:{
+            won: false
+            hits: $scope.hits
+            misses: $scope.misses
+            time: new Date().getTime() - $scope.startedTime
+          }}
         when "lost-match"
           response.msg = "sunk-received"
           $scope.handleMessage(response)
           setTimeout(->
-            $scope.result = {show: true, message: "You Lost"}
-#            socket.send()
+            $scope.result = {show: true, message: "You lost :'( !"}
+            socket.send {action: "save-data", matchData:{
+                won: false
+                hits: $scope.hits
+                misses: $scope.misses
+                time: new Date().getTime() - $scope.startedTime
+              }}
             $scope.$apply()
-          ,5600)
+          ,4600)
         else
           console.log("unknown message")
       $scope.$apply()

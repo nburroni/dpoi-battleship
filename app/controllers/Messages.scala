@@ -85,7 +85,15 @@ object Messages {
 
   case class YouLost(x: Int, y: Int) extends Message
 
+  case object TimeoutLost extends Message
+
+  case object TimeoutWon extends Message
+
   case class UserData(wins: Int, losses: Int, hits: Int, misses: Int) extends Message
 
   case object GetStats extends Message
+
+  case object GameTimeout extends Message
+
+  case object SetTimeout extends Message
 }

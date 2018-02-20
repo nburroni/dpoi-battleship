@@ -1,8 +1,10 @@
 package game
 
-import akka.actor.{Actor, ActorRef}
-import controllers.{PlayerActor, FireMap}
+import akka.actor.{Actor, ActorRef, ActorSystem, Cancellable}
+import controllers.{FireMap, PlayerActor}
 import controllers.Messages._
+
+import scala.concurrent.duration._
 
 /**
   * Created by nico on 08/06/16.
@@ -33,10 +35,16 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
   }
 
   override def receive = {
+    case GameTimeout =>
+      val rival: ActorRef = otherPlayer(sender)
+      sender ! TimeoutLost
+      rival ! TimeoutWon
+
     case s: SetReconnect =>
       if (players(s.player).shipsOption.isDefined && otherPlayerData(s.player).shipsOption.isDefined){
         GameManager setReconnect(players(s.player).id, s.player, self)
       }
+
     case Fire(x, y) =>
       val fireCoords: Coords = Coords(x, y)
       val currentPlayer: ActorRef = sender
@@ -72,14 +80,17 @@ class GameActor(playerOne: PlayerActor, playerTwo: PlayerActor) extends Actor {
                 currentPlayer ! YouWon(x,y)
                 rival ! YouLost(x,y)
               }else{
+                rival ! SetTimeout
                 currentPlayer ! SunkShip(x, y)
                 rival ! OpponentSunkShip(x, y)
               }
             }else{
+              rival ! SetTimeout
               currentPlayer ! HitShot(x, y)
               rival ! OpponentHit(x, y)
             }
           } else {
+            rival ! SetTimeout
             currentPlayer ! MissedShot(x, y)
             rival ! OpponentMissed(x, y)
           }

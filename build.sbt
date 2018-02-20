@@ -1,6 +1,6 @@
 name := "dpoibattleship"
 
-version := "1.0"
+version := "1.1"
 
 lazy val `dpoibattleship` = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 

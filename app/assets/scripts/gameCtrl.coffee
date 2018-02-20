@@ -256,7 +256,7 @@ angular.module 'app'
           response.msg = "sunk-ship"
           $scope.handleMessage(response)
           setTimeout(->
-            $scope.result = {show: true, message: "You Won!"}
+            $scope.result = {show: true, message: "You Won!", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
             socket.send {action: "save-data", matchData:{
               won: true
               hits: $scope.hits
@@ -266,7 +266,7 @@ angular.module 'app'
             $scope.$apply()
           ,5600)
         when "timeout-won"
-          $scope.result = {show: true, message: "Time exceeded. You won :) !"}
+          $scope.result = {show: true, message: "Time Exceeded. You Won!", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
           socket.send {action: "save-data", matchData:{
             won: true
             hits: $scope.hits
@@ -274,7 +274,7 @@ angular.module 'app'
             time: new Date().getTime() - $scope.startedTime
           }}
         when "timeout-lost"
-          $scope.result = {show: true, message: "Time exceeded. You lost :'("}
+          $scope.result = {show: true, message: "Time Exceeded. You Lost", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
           socket.send {action: "save-data", matchData:{
             won: false
             hits: $scope.hits
@@ -285,7 +285,7 @@ angular.module 'app'
           response.msg = "sunk-received"
           $scope.handleMessage(response)
           setTimeout(->
-            $scope.result = {show: true, message: "You lost :'( !"}
+            $scope.result = {show: true, message: "You Lost", myEfficacy: Math.round(($scope.hits*100)/($scope.hits+$scope.misses)), theirEfficacy: Math.round(($scope.oHits*100)/($scope.oHits+$scope.oMisses))}
             socket.send {action: "save-data", matchData:{
                 won: false
                 hits: $scope.hits

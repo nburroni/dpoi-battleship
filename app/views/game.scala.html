@@ -277,12 +277,12 @@
                 <div class="endgame-stats">
                     <h2>Your Stats</h2>
                     <h3>Hits: {{hits}} | Misses: {{misses}}</h3>
-                    <h3>Efficacy: {{Math.round((hits*100)/(hits+misses))}}%</h3>
+                    <h3>Efficacy: {{result.myEfficacy}}%</h3>
                 </div>
                 <div class="endgame-stats">
                     <h2>Opponent's Stats</h2>
                     <h3>Hits: {{oHits}} | Misses: {{oMisses}}</h3>
-                    <h3>Efficacy: {{Math.round((oHits*100)/(oHits+oMisses))}}%</h3>
+                    <h3>Efficacy: {{result.theirEfficacy}}%</h3>
                 </div>
             </div>
 

@@ -127,7 +127,7 @@ class PlayerActor(out: ActorRef, _id: String) extends Actor {
       out ! ActionOut("timeout-won")
 
     case SetTimeout =>
-      cancellableTimeout =  Some(ActorSystem("mySystem").scheduler.scheduleOnce(5 seconds, self, GameTimeout))
+      cancellableTimeout =  Some(ActorSystem("mySystem").scheduler.scheduleOnce(2 minutes, self, GameTimeout))
 
     case CancelTimeout =>
       cancellableTimeout foreach(_.cancel())
